@@ -11,10 +11,15 @@ public class Program
         Console.WriteLine("Welcome !");
 
         var flights = new List<Flight>
-        {
-            new Flight(100.0, "USA", "UK", new DateTime(2024, 3, 10), "JFK", "LHR", FlightClass.Economy),
-            new Flight(500.0, "UK", "France", new DateTime(2024, 3, 15), "LHR", "CDG", FlightClass.Business)
-        };
+{
+    new Flight(100.0, "USA", "UK", new DateTime(2024, 3, 10), "JFK", "LHR", FlightClass.Economy),
+    new Flight(500.0, "UK", "France", new DateTime(2024, 3, 15), "LHR", "CDG", FlightClass.Business),
+    new Flight(300.0, "Germany", "Italy", new DateTime(2024, 3, 20), "TXL", "FCO", FlightClass.FirstClass),
+    new Flight(200.0, "Spain", "Greece", new DateTime(2024, 3, 25), "MAD", "ATH", FlightClass.Economy),
+    new Flight(400.0, "Australia", "Japan", new DateTime(2024, 3, 30), "SYD", "HND", FlightClass.Business),
+    new Flight(600.0, "China", "Singapore", new DateTime(2024, 4, 5), "PEK", "SIN", FlightClass.FirstClass)
+};
+
 
         var csvFlightWriter = new CsvFlight();
         csvFlightWriter.WriteFlightsToCsv(flights, "C:\\Users\\hp\\Desktop\\C#\\AirportTicketBooking\\ATP.DataAccessLayer\\CsvFiles\\flights.csv");

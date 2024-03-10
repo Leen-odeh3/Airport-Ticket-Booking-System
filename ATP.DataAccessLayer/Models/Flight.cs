@@ -14,4 +14,14 @@ public class Flight
     public string ArrivalAirport { get; set; }
     public FlightClass Class { get; set; }
 
+    public Flight(double price, string departureCountry, string destinationCountry, DateTime departureDate, string departureAirport, string arrivalAirport, FlightClass flightClass)
+    {
+        Price = price;
+        DepartureCountry = departureCountry;
+        DestinationCountry = destinationCountry;
+        DepartureDate = departureDate;
+        DepartureAirport = departureAirport;
+        ArrivalAirport = arrivalAirport;
+        Class = flightClass;
+    }
 }

@@ -1,10 +1,9 @@
-﻿namespace ATP.PresentationLayer
+﻿namespace ATP.PresentationLayer;
+
+public class Program
 {
-    internal class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Hello, World!");
-        }
+        Console.WriteLine("Welcome !");
     }
 }

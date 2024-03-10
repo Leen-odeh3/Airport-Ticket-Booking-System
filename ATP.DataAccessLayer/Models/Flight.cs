@@ -15,8 +15,9 @@ public class Flight
     public string ArrivalAirport { get; set; }
     public FlightClass Class { get; set; }
 
-    public Flight(double price, string departureCountry, string destinationCountry, DateTime departureDate, string departureAirport, string arrivalAirport, FlightClass flightClass)
+    public Flight(int id, double price, string departureCountry, string destinationCountry, DateTime departureDate, string departureAirport, string arrivalAirport, FlightClass flightClass)
     {
+        Id = id;
         Price = price;
         DepartureCountry = departureCountry;
         DestinationCountry = destinationCountry;
@@ -25,4 +26,5 @@ public class Flight
         ArrivalAirport = arrivalAirport;
         Class = flightClass;
     }
+
 }

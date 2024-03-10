@@ -27,6 +27,59 @@ public class Program
 
         Console.WriteLine("Flights data has been written to flights.csv \n");
         ReadAndDisplayCsvData("C:\\Users\\hp\\Desktop\\C#\\AirportTicketBooking\\ATP.DataAccessLayer\\CsvFiles\\flights.csv");
+
+        DisplayMainMenu();
+    }
+
+    static void DisplayMainMenu()
+    {
+        Console.WriteLine(@"Welcome to the Airport Ticket Booking System!
+--------------------------------------------
+1. Passenger
+2. Manager
+3. Exit");
+        Console.Write("Enter your role (1 for Passenger, 2 for Manager, 3 to Exit): ");
+
+        if (!int.TryParse(Console.ReadLine(), out int roleChoice))
+        {
+            Console.WriteLine("Invalid choice. Please enter a valid number.");
+            return;
+        }
+
+        switch (roleChoice)
+        {
+            case 1:
+                RunPassengerMenu();
+                break;
+            case 2:
+                RunManagerMenu();
+                break;
+            case 3:
+                Console.WriteLine("Exiting the application. Goodbye!");
+                Environment.Exit(0);
+                break;
+            default:
+                Console.WriteLine("Invalid choice. Please try again.");
+                break;
+        }
+    }
+
+        static void RunPassengerMenu()
+    {
+        Console.WriteLine("Passenger Menu");
+        Console.WriteLine("Passenger features will be available soon!");
+        Console.WriteLine("Press any key to return to the main menu...");
+        Console.ReadKey();
+        DisplayMainMenu();
+    }
+
+    static void RunManagerMenu()
+    {
+        Console.WriteLine("Manager Menu");
+        Console.WriteLine("Manager features will be available soon!");
+        Console.WriteLine("Press any key to return to the main menu...");
+        Console.ReadKey();
+        DisplayMainMenu();
     }
 
     static void ReadAndDisplayCsvData(string csvFilePath)
@@ -43,7 +96,7 @@ public class Program
             try
             {
                 var records = csv.GetRecords<dynamic>().ToList();
-                Console.WriteLine("Data from CSV: (Avalible Flight) ");
+                Console.WriteLine("Data from CSV: (Available Flights) ");
                 foreach (var record in records)
                 {
                     foreach (var property in record)

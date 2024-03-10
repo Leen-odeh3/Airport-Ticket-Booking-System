@@ -7,8 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="Enum\" />
     <Folder Include="IGenericRepo\" />
     <Folder Include="CsvFiles\" />
   </ItemGroup>

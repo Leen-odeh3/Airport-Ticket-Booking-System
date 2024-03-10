@@ -1,0 +1,4 @@
+Price,DepartureCountry,DestinationCountry,DepartureDate,DepartureAirport,ArrivalAirport,Class
+100,USA,UK,03/10/2024 00:00:00,JFK,LHR,Economy
+500,UK,France,03/15/2024 00:00:00,LHR,CDG,Business
+

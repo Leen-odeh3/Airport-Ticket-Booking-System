@@ -18,14 +18,15 @@ namespace ATP.BusinessLogicLayer.Services
 
         public void RunMenu()
         {
-            Console.WriteLine("Passenger Menu");
-            Console.WriteLine("--------------------------------------");
-            Console.WriteLine("1. Book a Flight");
-            Console.WriteLine("2. Search for Available Flights");
-            Console.WriteLine("3. View Personal Bookings");
-            Console.WriteLine("4. Cancel Booking");
-            Console.WriteLine("5. Go Back");
+            Console.WriteLine(@"Passenger Menu
+--------------------------------------
+1. Book a Flight
+2. Search for Available Flights
+3. View Personal Bookings
+4. Cancel Booking
+5. Go Back");
             Console.Write("Enter your choice: ");
+
 
             int passengerChoice;
             if (!int.TryParse(Console.ReadLine(), out passengerChoice))

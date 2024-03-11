@@ -30,33 +30,40 @@ namespace ATP.PresentationLayer
             var csvFlightWriter = new CsvFlight();
             csvFlightWriter.WriteFlightsToCsv(flights, "C:\\Users\\hp\\Desktop\\C#\\ATP.DataAccessLayer\\CsvFiles\\flights.csv");
 
-            while (true)
+            int mainChoice;
+            do
             {
-                Console.WriteLine("1. Passenger");
-                Console.WriteLine("2. Manager");
-                Console.WriteLine("3. Exit");
+                Console.WriteLine(@"1. Passenger
+2. Manager
+3. Exit");
                 Console.Write("Enter your choice: ");
 
-                string mainChoice = Console.ReadLine();
+
+                if (!int.TryParse(Console.ReadLine(), out mainChoice))
+                {
+                    Console.WriteLine("Invalid choice. Please enter a number.");
+                    continue;
+                }
 
                 switch (mainChoice)
                 {
-                    case "1":
+                    case 1:
                         PassengerService passengerService = new PassengerService(flights, bookingService);
                         passengerService.RunMenu();
                         break;
-                    case "2":
+                    case 2:
                         ManagerService managerService = new ManagerService(flights, bookingService);
                         managerService.RunMenu();
                         break;
-                    case "3":
+                    case 3:
                         Console.WriteLine("Exiting the application. Goodbye!");
-                        return;
+                        break;
                     default:
                         Console.WriteLine("Invalid choice. Please try again.");
                         break;
                 }
-            }
+            } while (mainChoice != 3);
+
         }
     }
 }

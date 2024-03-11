@@ -8,12 +8,9 @@ namespace ATP.BusinessLogicLayer.Services
     public class ManagerService
     {
         private readonly List<Flight> availableFlights;
-        private readonly BookingService bookingService;
-
         public ManagerService(List<Flight> availableFlights, BookingService bookingService)
         {
             this.availableFlights = availableFlights;
-            this.bookingService = bookingService;
         }
 
         public void RunMenu()

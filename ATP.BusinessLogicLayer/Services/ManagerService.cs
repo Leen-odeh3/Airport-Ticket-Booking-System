@@ -17,12 +17,12 @@ namespace ATP.BusinessLogicLayer.Services
         {
             while (true)
             {
-                Console.WriteLine("Manager Menu");
-                Console.WriteLine("--------------------------------------");
-                Console.WriteLine("1. Filter by Flight");
-                Console.WriteLine("2. Filter by Price");
-                Console.WriteLine("3. Filter by Class");
-                Console.WriteLine("4. Exit");
+                Console.WriteLine(@"Manager Menu
+--------------------------------------
+1. Filter by Flight
+2. Filter by Price
+3. Filter by Class
+4. Exit");
                 Console.Write("Enter your choice: ");
 
                 string choice = Console.ReadLine();

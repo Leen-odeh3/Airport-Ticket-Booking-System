@@ -1,10 +1,9 @@
-﻿using System.Globalization;
+﻿
 using ATP.BusinessLogicLayer.Services;
 using ATP.DataAccessLayer.Enum;
 using ATP.DataAccessLayer.Helper;
 using ATP.DataAccessLayer.Models;
-using CsvHelper;
-using CsvHelper.Configuration;
+
 
 namespace ATP.PresentationLayer;
 
@@ -42,7 +41,7 @@ public class Program
             switch (mainChoice)
             {
                 case "1":
-                    PassengerService passengerService = new PassengerService();
+                    PassengerService passengerService = new PassengerService(flights);
                     passengerService.RunMenu();
                     break;
                 case "2":

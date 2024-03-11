@@ -1,7 +1,4 @@
-﻿
-
-namespace ATP.DataAccessLayer.Models;
-
+﻿namespace ATP.DataAccessLayer.Models;
 public class Passenger
 {
     public int PassengerId { get; set; }

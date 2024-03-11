@@ -1,21 +1,21 @@
-﻿using ATP.DataAccessLayer.Enum;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
 using ATP.DataAccessLayer.Models;
-using System;
+using CsvHelper;
+using CsvHelper.Configuration;
 
 namespace ATP.BusinessLogicLayer.Services
 {
     public class PassengerService
     {
-        private readonly BookingService _bookingService;
+        private readonly List<Flight> availableFlights;
 
-        public PassengerService(BookingService bookingService)
+        public PassengerService(List<Flight> availableFlights)
         {
-            _bookingService = bookingService;
-        }
-
-        public PassengerService()
-        {
-            _bookingService = new BookingService(); 
+            this.availableFlights = availableFlights;
         }
 
         public void RunMenu()
@@ -24,8 +24,9 @@ namespace ATP.BusinessLogicLayer.Services
             Console.WriteLine("--------------------------------------");
             Console.WriteLine("1. Book a Flight");
             Console.WriteLine("2. Search for Available Flights");
-            Console.WriteLine("3. Manage Bookings");
-            Console.WriteLine("4. Go Back");
+            Console.WriteLine("3. View Personal Bookings");
+            Console.WriteLine("4. Cancel Booking");
+            Console.WriteLine("5. Go Back");
             Console.Write("Enter your choice: ");
 
             int passengerChoice;
@@ -44,10 +45,10 @@ namespace ATP.BusinessLogicLayer.Services
                     SearchForAvailableFlights();
                     break;
                 case 3:
-                    ManageBookings();
+                    ViewPersonalBookings();
                     break;
                 case 4:
-                    // Go back to the previous menu
+                    CancelBooking();
                     break;
                 default:
                     Console.WriteLine("Invalid choice. Please try again.");
@@ -59,123 +60,47 @@ namespace ATP.BusinessLogicLayer.Services
         {
             Console.WriteLine("Booking a flight...");
 
-            Console.Write("Enter the Flight ID: ");
-            int flightId;
-            while (!int.TryParse(Console.ReadLine(), out flightId))
+            Console.WriteLine("Available Flights:");
+            foreach (var flight in availableFlights)
             {
-                Console.WriteLine("Invalid input. Please enter a valid Flight ID: ");
+                Console.WriteLine($"Flight ID: {flight.Id}, Departure: {flight.DepartureCountry}, Destination: {flight.DestinationCountry}, Date: {flight.DepartureDate}, Class: {flight.Class}");
             }
 
-            Console.Write("Enter the Flight Class (Economy, Business, FirstClass): ");
-            string classInput = Console.ReadLine();
-            FlightClass flightClass;
-            while (!Enum.TryParse(classInput, out flightClass))
+            Console.Write("Enter the ID of the flight you want to book: ");
+            if (!int.TryParse(Console.ReadLine(), out int flightId))
             {
-                Console.WriteLine("Invalid input. Please enter a valid Flight Class: ");
-                classInput = Console.ReadLine();
-            }
-
-            Booking newBooking = new Booking()
-            {
-                FlightId = flightId,
-                FlightClass = flightClass.ToString(),
-            };
-
-            _bookingService.AddBooking(newBooking);
-
-            Console.WriteLine("Flight successfully booked! \n");
-        }
-
-        private void SearchForAvailableFlights()
-        {
-            Console.WriteLine("Searching for available flights...");
-        }
-
-        private void ManageBookings()
-        {
-            Console.WriteLine("Manage Bookings");
-            Console.WriteLine("----------------------");
-            Console.WriteLine("1. Cancel a Booking");
-            Console.WriteLine("2. Modify a Booking");
-            Console.WriteLine("3. View Personal Bookings");
-            Console.WriteLine("4. Go Back");
-            Console.Write("Enter your choice: ");
-
-            int manageChoice;
-            if (!int.TryParse(Console.ReadLine(), out manageChoice))
-            {
-                Console.WriteLine("Invalid choice. Please try again.");
+                Console.WriteLine("Invalid flight ID.");
                 return;
             }
 
-            switch (manageChoice)
+            var selectedFlight = availableFlights.FirstOrDefault(f => f.Id == flightId);
+            if (selectedFlight == null)
             {
-                case 1:
-                    CancelBooking();
-                    break;
-                case 2:
-                    ModifyBooking();
-                    break;
-                case 3:
-                    ViewBookingDetails();
-                    break;
-                default:
-                    Console.WriteLine("Invalid choice. Please try again.");
-                    break;
+                Console.WriteLine("Flight not found.");
+                return;
             }
+
+            Console.WriteLine($"You have booked a flight from {selectedFlight.DepartureCountry} to {selectedFlight.DestinationCountry} on {selectedFlight.DepartureDate}.");
+        }
+
+
+        private void SearchForAvailableFlights()
+        {
+            Console.WriteLine("Available Flights:");
+            foreach (var flight in availableFlights)
+            {
+                Console.WriteLine($"Flight ID: {flight.Id}, From: {flight.DepartureCountry}, To: {flight.DestinationCountry}, Date: {flight.DepartureDate}");
+            }
+        }
+
+        private void ViewPersonalBookings()
+        {
+            Console.WriteLine("View Personal Bookings");
         }
 
         private void CancelBooking()
         {
-            Console.WriteLine("Canceling a booking...");
-            Console.Write("Enter the Booking ID to cancel: ");
-            if (!int.TryParse(Console.ReadLine(), out int bookingId))
-            {
-                Console.WriteLine("Invalid input. Please enter a valid Booking ID.");
-                return;
-            }
-
-            _bookingService.CancelBooking(bookingId);
-        }
-
-        private void ModifyBooking()
-        {
-            Console.WriteLine("Modifying a booking...");
-            Console.Write("Enter the Booking ID to modify: ");
-            if (!int.TryParse(Console.ReadLine(), out int bookingId))
-            {
-                Console.WriteLine("Invalid input. Please enter a valid Booking ID.");
-                return;
-            }
-
-            _bookingService.CancelBooking(bookingId);
-            BookFlight();
-        }
-
-        public void ViewBookingDetails()
-        {
-            Console.WriteLine("Viewing booking details...");
-            Console.Write("Enter the Booking ID: ");
-            int bookingId;
-            if (!int.TryParse(Console.ReadLine(), out bookingId))
-            {
-                Console.WriteLine("Invalid input. Please enter a valid Booking ID.");
-                return;
-            }
-
-            Booking booking = _bookingService.GetBookingById(bookingId);
-            if (booking is not null)
-            {
-                Console.WriteLine($"Booking ID: {booking.BookingId}");
-                Console.WriteLine($"Passenger ID: {booking.PassengerId}");
-                Console.WriteLine($"Flight ID: {booking.FlightId}");
-                Console.WriteLine($"Flight Class: {booking.FlightClass}");
-                Console.WriteLine($"Booking Date: {booking.BookingDate}");
-            }
-            else
-            {
-                Console.WriteLine($"Booking with ID {bookingId} does not exist. OR You dont book any Flight");
-            }
+            Console.WriteLine("Cancel Booking");
         }
     }
 }

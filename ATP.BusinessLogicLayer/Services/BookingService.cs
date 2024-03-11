@@ -1,53 +1,65 @@
-﻿using System.Linq;
+﻿using ATP.DataAccessLayer.Models;
 
-namespace ATP.BusinessLogicLayer.Services
+public class BookingService
 {
-    using ATP.DataAccessLayer.Models;
-    public class BookingService
+    private List<Booking> bookings;
+    private int nextBookingId;
+
+    public BookingService()
     {
-        private List<Booking> bookings;
+        bookings = new List<Booking>();
+        nextBookingId = 1;
+    }
 
-        public BookingService()
+    public void BookFlight(Flight flight)
+    {
+        int bookingId = nextBookingId++;
+        var booking = new Booking
         {
-            bookings = new List<Booking>();
+            BookingId = bookingId,
+            Flight = flight
+        };
+        bookings.Add(booking);
+        Console.WriteLine($"Booking with ID {bookingId} successfully created for the flight from {flight.DepartureCountry} to {flight.DestinationCountry} on {flight.DepartureDate}.");
+    }
+
+    public void CancelBooking(int bookingId)
+    {
+       
+        foreach (var b in bookings) 
+        {
+            Console.WriteLine($"Booking ID: {b.BookingId}");
         }
 
-        public void CancelBooking(int bookingId)
+        var booking = bookings.Find(b => b.BookingId == bookingId);
+        if (booking is not null)
         {
-            var booking = bookings.Find(b => b.BookingId== bookingId);
-            if (booking is not null)
-            {
-                bookings.Remove(booking);
-                Console.WriteLine("Booking canceled successfully.");
-            }
-            else
-            {
-                Console.WriteLine("Booking not found.");
-            }
+            bookings.Remove(booking);
+            Console.WriteLine("Booking canceled successfully.");
         }
-
-        public void ModifyBooking(int bookingId, Flight newFlight)
+        else
         {
-            var booking = bookings.Find(b => b.BookingId == bookingId);
-            if (booking is not null)
-            {
-                booking.Flight = newFlight;
-                Console.WriteLine("Booking modified successfully.");
-            }
-            else
-            {
-                Console.WriteLine("Booking not found.");
-            }
-        }
-
-        public List<Booking> ViewPersonalBookings(string passengerName)
-        {
-            var personalBookings = bookings.Where(b => b.Passenger.Name == passengerName).ToList();
-            if (personalBookings.Count == 0)
-            {
-                Console.WriteLine("No bookings found for this passenger.");
-            }
-            return personalBookings;
+            Console.WriteLine("Booking not found.");
         }
     }
+
+    public void ViewPersonalBookingDetails(int bookingId)
+    {
+        var booking = bookings.Find(b => b.BookingId == bookingId);
+        if (booking != null)
+        {
+            Console.WriteLine($"Booking ID: {booking.BookingId}");
+            Console.WriteLine($"Flight Details:");
+            Console.WriteLine($"   Departure: {booking.Flight.DepartureCountry}");
+            Console.WriteLine($"   Destination: {booking.Flight.DestinationCountry}");
+            Console.WriteLine($"   Date: {booking.Flight.DepartureDate}");
+            Console.WriteLine($"   Class: {booking.Flight.Class}");
+        }
+        else
+        {
+            Console.WriteLine("Booking not found.");
+        }
+    }
+
+
 }

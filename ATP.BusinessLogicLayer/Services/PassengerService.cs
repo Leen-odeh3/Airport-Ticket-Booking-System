@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using ATP.DataAccessLayer.Models;
-using CsvHelper;
-using CsvHelper.Configuration;
 
 namespace ATP.BusinessLogicLayer.Services
 {
     public class PassengerService
     {
         private readonly List<Flight> availableFlights;
+        private readonly BookingService bookingService;
 
-        public PassengerService(List<Flight> availableFlights)
+        public PassengerService(List<Flight> availableFlights, BookingService bookingService)
         {
             this.availableFlights = availableFlights;
+            this.bookingService = bookingService;
         }
 
         public void RunMenu()
@@ -42,10 +40,10 @@ namespace ATP.BusinessLogicLayer.Services
                     BookFlight();
                     break;
                 case 2:
-                    SearchForAvailableFlights();
+                    // SearchForAvailableFlights();
                     break;
                 case 3:
-                    ViewPersonalBookings();
+                   ViewPersonalBookings();
                     break;
                 case 4:
                     CancelBooking();
@@ -80,27 +78,34 @@ namespace ATP.BusinessLogicLayer.Services
                 return;
             }
 
-            Console.WriteLine($"You have booked a flight from {selectedFlight.DepartureCountry} to {selectedFlight.DestinationCountry} on {selectedFlight.DepartureDate}.");
+            bookingService.BookFlight(selectedFlight); // Use BookingService to book the flight
         }
 
-
-        private void SearchForAvailableFlights()
-        {
-            Console.WriteLine("Available Flights:");
-            foreach (var flight in availableFlights)
-            {
-                Console.WriteLine($"Flight ID: {flight.Id}, From: {flight.DepartureCountry}, To: {flight.DestinationCountry}, Date: {flight.DepartureDate}");
-            }
-        }
-
-        private void ViewPersonalBookings()
-        {
-            Console.WriteLine("View Personal Bookings");
-        }
 
         private void CancelBooking()
         {
-            Console.WriteLine("Cancel Booking");
+            Console.Write("Enter booking ID to cancel: ");
+            if (!int.TryParse(Console.ReadLine(), out int bookingId))
+            {
+                Console.WriteLine("Invalid booking ID.");
+                return;
+            }
+
+            bookingService.CancelBooking(bookingId);
         }
+
+
+        private void ViewPersonalBookings()
+        {
+            Console.Write("Enter booking ID to view details: ");
+            if (!int.TryParse(Console.ReadLine(), out int bookingId))
+            {
+                Console.WriteLine("Invalid booking ID.");
+                return;
+            }
+
+            bookingService.ViewPersonalBookingDetails(bookingId);
+        }
+
     }
 }

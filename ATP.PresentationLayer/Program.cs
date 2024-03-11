@@ -46,7 +46,8 @@ namespace ATP.PresentationLayer
                         passengerService.RunMenu();
                         break;
                     case "2":
-                       
+                        ManagerService managerService = new ManagerService(flights, bookingService);
+                        managerService.RunMenu();
                         break;
                     case "3":
                         Console.WriteLine("Exiting the application. Goodbye!");

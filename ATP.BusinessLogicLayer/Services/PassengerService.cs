@@ -40,9 +40,6 @@ namespace ATP.BusinessLogicLayer.Services
                     BookFlight();
                     break;
                 case 2:
-                    // SearchForAvailableFlights();
-                    break;
-                case 3:
                    ViewPersonalBookings();
                     break;
                 case 4:
@@ -53,7 +50,6 @@ namespace ATP.BusinessLogicLayer.Services
                     break;
             }
         }
-
         private void BookFlight()
         {
             Console.WriteLine("Booking a flight...");
@@ -80,8 +76,6 @@ namespace ATP.BusinessLogicLayer.Services
 
             bookingService.BookFlight(selectedFlight); // Use BookingService to book the flight
         }
-
-
         private void CancelBooking()
         {
             Console.Write("Enter booking ID to cancel: ");
@@ -93,8 +87,6 @@ namespace ATP.BusinessLogicLayer.Services
 
             bookingService.CancelBooking(bookingId);
         }
-
-
         private void ViewPersonalBookings()
         {
             Console.Write("Enter booking ID to view details: ");

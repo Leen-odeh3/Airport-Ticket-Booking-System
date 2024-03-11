@@ -10,7 +10,6 @@ public class BookingService
         bookings = new List<Booking>();
         nextBookingId = 1;
     }
-
     public void BookFlight(Flight flight)
     {
         int bookingId = nextBookingId++;
@@ -22,7 +21,6 @@ public class BookingService
         bookings.Add(booking);
         Console.WriteLine($"Booking with ID {bookingId} successfully created for the flight from {flight.DepartureCountry} to {flight.DestinationCountry} on {flight.DepartureDate}.");
     }
-
     public void CancelBooking(int bookingId)
     {
        
@@ -42,12 +40,11 @@ public class BookingService
             Console.WriteLine("Booking not found.");
         }
     }
-
     public void ViewPersonalBookingDetails(int bookingId)
     {
         var booking = bookings.Find(b => b.BookingId == bookingId);
-        if (booking != null)
-        {
+        if (booking is not null)
+        { 
             Console.WriteLine($"Booking ID: {booking.BookingId}");
             Console.WriteLine($"Flight Details:");
             Console.WriteLine($"   Departure: {booking.Flight.DepartureCountry}");
@@ -60,6 +57,9 @@ public class BookingService
             Console.WriteLine("Booking not found.");
         }
     }
-
+    public List<Booking> FilterBookings(Func<Booking, bool> predicate)
+    {
+        return bookings.Where(predicate).ToList();
+    }
 
 }

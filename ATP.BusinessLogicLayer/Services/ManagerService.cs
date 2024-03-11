@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ATP.DataAccessLayer.Enum;
 using ATP.DataAccessLayer.Models;
 
 namespace ATP.BusinessLogicLayer.Services
@@ -23,7 +24,8 @@ namespace ATP.BusinessLogicLayer.Services
                 Console.WriteLine("--------------------------------------");
                 Console.WriteLine("1. Filter by Flight");
                 Console.WriteLine("2. Filter by Price");
-                Console.WriteLine("3. Exit");
+                Console.WriteLine("3. Filter by Class");
+                Console.WriteLine("4. Exit");
                 Console.Write("Enter your choice: ");
 
                 string choice = Console.ReadLine();
@@ -36,6 +38,9 @@ namespace ATP.BusinessLogicLayer.Services
                         FilterByPrice();
                         break;
                     case "3":
+                        FilterByClass();
+                        break;
+                    case "4":
                         Console.WriteLine("Exiting Manager Menu.");
                         return;
                     default:
@@ -81,6 +86,20 @@ namespace ATP.BusinessLogicLayer.Services
 
             var filteredFlights = availableFlights.FindAll(flight =>
                 flight.Price >= minPrice && flight.Price <= maxPrice
+            );
+
+            DisplayFilteredFlights(filteredFlights);
+        }
+        private void FilterByClass()
+        {
+            Console.WriteLine("Filter by Class:");
+            Console.WriteLine("Enter Class (Economy, Business, FirstClass):");
+            string inputClass = Console.ReadLine().Trim();
+
+            Enum.TryParse(inputClass, true, out FlightClass flightClass);
+
+            var filteredFlights = availableFlights.FindAll(flight =>
+                flight.Class == flightClass
             );
 
             DisplayFilteredFlights(filteredFlights);

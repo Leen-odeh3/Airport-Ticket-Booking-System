@@ -24,12 +24,9 @@ public class Program
         };
 
         var csvFlightWriter = new CsvFlight();
-        csvFlightWriter.WriteFlightsToCsv(flights, "C:\\Users\\hp\\Desktop\\C#\\AirportTicketBooking\\ATP.DataAccessLayer\\CsvFiles\\flights.csv");
+        csvFlightWriter.WriteFlightsToCsv(flights, "C:\\Users\\hp\\Desktop\\C#\\ATP.DataAccessLayer\\CsvFiles\\flights.csv");
 
-        Console.WriteLine("Flights data has been written to flights.csv \n");
-        ReadAndDisplayCsvData("C:\\Users\\hp\\Desktop\\C#\\AirportTicketBooking\\ATP.DataAccessLayer\\CsvFiles\\flights.csv");
-
-
+   
         Console.WriteLine("Welcome to Airport Ticket Booking App!");
         Console.WriteLine("-------------------------------------");
 
@@ -62,35 +59,5 @@ public class Program
         }
     }
 
-    static void ReadAndDisplayCsvData(string csvFilePath)
-    {
-        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
-        {
-            HeaderValidated = null,
-            MissingFieldFound = null,
-        };
 
-        using (var reader = new StreamReader(csvFilePath))
-        using (var csv = new CsvReader(reader, config))
-        {
-            try
-            {
-                var records = csv.GetRecords<dynamic>().ToList();
-                Console.WriteLine("Data from CSV: (Available Flights) ");
-                foreach (var record in records)
-                {
-                    foreach (var property in record)
-                    {
-                        Console.WriteLine($"{property.Key}: {property.Value}");
-                    }
-                    Console.WriteLine();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-                Console.WriteLine($"StackTrace: {ex.StackTrace}");
-            }
-        }
-    }
 }

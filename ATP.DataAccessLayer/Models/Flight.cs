@@ -1,7 +1,4 @@
-﻿
-
-using ATP.DataAccessLayer.Enum;
-
+﻿using ATP.DataAccessLayer.Enum;
 namespace ATP.DataAccessLayer.Models;
 
 public class Flight

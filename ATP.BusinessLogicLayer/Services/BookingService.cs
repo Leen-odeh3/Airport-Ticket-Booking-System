@@ -1,14 +1,15 @@
 ﻿using ATP.DataAccessLayer.Models;
-
+using Microsoft.Extensions.Logging;
 public class BookingService
 {
     private List<Booking> bookings;
     private int nextBookingId;
-
-    public BookingService()
+    private readonly ILogger<BookingService> _logger;
+    public BookingService(ILogger<BookingService> logger)
     {
         bookings = new List<Booking>();
         nextBookingId = 1;
+        _logger = logger;
     }
     public void BookFlight(Flight flight)
     {
@@ -19,26 +20,27 @@ public class BookingService
             Flight = flight
         };
         bookings.Add(booking);
-        Console.WriteLine($"Booking with ID {bookingId} successfully created for the flight from {flight.DepartureCountry} to {flight.DestinationCountry} on {flight.DepartureDate}.");
+        _logger.LogInformation($"Booking with ID {bookingId} successfully created for the flight from {flight.DepartureCountry} to {flight.DestinationCountry} on {flight.DepartureDate}.");
+
+
     }
     public void CancelBooking(int bookingId)
     {
-       
-        foreach (var b in bookings) 
-        {
-            Console.WriteLine($"Booking ID: {b.BookingId}");
-        }
-
         var booking = bookings.Find(b => b.BookingId == bookingId);
         if (booking is not null)
         {
             bookings.Remove(booking);
-            Console.WriteLine("Booking canceled successfully.");
+            _logger.LogInformation("Booking canceled successfully.");
         }
         else
         {
-            Console.WriteLine("Booking not found.");
+            _logger.LogInformation("Booking not found.");
         }
+    }
+
+    public List<Booking> GetBookings()
+    {
+        return bookings;
     }
     public void ViewPersonalBookingDetails(int bookingId)
     {

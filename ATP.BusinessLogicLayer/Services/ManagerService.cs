@@ -79,12 +79,19 @@ public class ManagerService
             return;
         }
 
+        if (minPrice > maxPrice)
+        {
+            Console.WriteLine("Minimum price cannot be greater than maximum price.");
+            return;
+        }
+
         var filteredFlights = availableFlights.FindAll(flight =>
             flight.Price >= minPrice && flight.Price <= maxPrice
         );
 
         DisplayFilteredFlights(filteredFlights);
     }
+
     private void FilterByClass()
     {
         Console.WriteLine("Filter by Class:");

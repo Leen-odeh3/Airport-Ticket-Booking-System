@@ -2,7 +2,7 @@
 
 public interface IGenericRepo<T>
 {
-    IEnumerable<T> GetAll();
+    ICollection<T> GetAll();
     T GetById(int id);
     void Add(T entity);
     void Update(T entity);

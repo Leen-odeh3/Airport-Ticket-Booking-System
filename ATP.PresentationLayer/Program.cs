@@ -1,8 +1,11 @@
-﻿
-using ATP.BusinessLogicLayer.Services;
+﻿using ATP.BusinessLogicLayer.Services;
 using ATP.DataAccessLayer.Enum;
 using ATP.DataAccessLayer.Helper;
 using ATP.DataAccessLayer.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging.Abstractions;
+
+
 
 namespace ATP.PresentationLayer;
 
@@ -12,6 +15,12 @@ public class Program
     {
         Console.WriteLine("Welcome to Airport Ticket Booking App!");
         Console.WriteLine("-------------------------------------");
+
+        var builder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+
+        var configuration = builder.Build();
 
         var flights = new List<Flight>
         {
@@ -23,11 +32,12 @@ public class Program
             new Flight(6, 600.0, "China", "Singapore", new DateTime(2024, 4, 5), "PEK", "SIN", FlightClass.FirstClass)
         };
 
-        var bookingService = new BookingService();
+        var bookingService = new BookingService(NullLogger<BookingService>.Instance);
 
         Console.WriteLine("Welcome !");
+        var csvFilePath = configuration["CsvFilePath"];
         var csvFlightWriter = new CsvFlight();
-        csvFlightWriter.WriteFlightsToCsv(flights, "C:\\Users\\hp\\Desktop\\C#\\ATP.DataAccessLayer\\CsvFiles\\flights.csv");
+        csvFlightWriter.WriteFlightsToCsv(flights, csvFilePath);
 
         int mainChoice;
         do
@@ -36,7 +46,6 @@ public class Program
 2. Manager
 3. Exit");
             Console.Write("Enter your choice: ");
-
 
             if (!int.TryParse(Console.ReadLine(), out mainChoice))
             {
@@ -61,7 +70,18 @@ public class Program
                     Console.WriteLine("Invalid choice. Please try again.");
                     break;
             }
-        } while (mainChoice != 3);
-
+            Console.WriteLine("Current Bookings:");
+            foreach (var b in bookingService.GetBookings())
+            {
+                Console.WriteLine($"Booking ID: {b.BookingId}");
+                Console.WriteLine($"Flight Details:");
+                Console.WriteLine($"   Departure: {b.Flight.DepartureCountry}");
+                Console.WriteLine($"   Destination: {b.Flight.DestinationCountry}");
+                Console.WriteLine($"   Date: {b.Flight.DepartureDate}");
+                Console.WriteLine($"   Class: {b.Flight.Class}");
+            }
+            Console.WriteLine();
+        }
+        while (mainChoice != 3);
     }
 }

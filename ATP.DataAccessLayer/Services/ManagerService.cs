@@ -6,43 +6,9 @@ namespace ATP.BusinessLogicLayer.Services;
 public class ManagerService
 {
     private readonly List<Flight> availableFlights;
-    public ManagerService(List<Flight> availableFlights, BookingService bookingService)
+    public ManagerService(List<Flight> flights)
     {
-        this.availableFlights = availableFlights;
-    }
-
-    public void RunMenu()
-    {
-        while (true)
-        {
-            Console.WriteLine(@"Manager Menu
---------------------------------------
-1. Filter by Flight
-2. Filter by Price
-3. Filter by Class
-4. Exit");
-            Console.Write("Enter your choice: ");
-
-            string choice = Console.ReadLine();
-            switch (choice)
-            {
-                case "1":
-                    FilterByFlight();
-                    break;
-                case "2":
-                    FilterByPrice();
-                    break;
-                case "3":
-                    FilterByClass();
-                    break;
-                case "4":
-                    Console.WriteLine("Exiting Manager Menu.");
-                    return;
-                default:
-                    Console.WriteLine("Invalid choice. Please try again.");
-                    break;
-            }
-        }
+        availableFlights = flights;
     }
 
     private void FilterByFlight()

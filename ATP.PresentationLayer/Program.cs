@@ -60,8 +60,8 @@ public class Program
                     passengerService.RunMenu();
                     break;
                 case 2:
-                    ManagerService managerService = new ManagerService(flights, bookingService);
-                    managerService.RunMenu();
+                    ManagerService managerService = new ManagerService(flights);
+                    RunMenu(managerService);
                     break;
                 case 3:
                     Console.WriteLine("Exiting the application. Goodbye!");
@@ -84,7 +84,6 @@ public class Program
         }
         while (mainChoice != 3);
     }
-    // Inside your presentation layer (e.g., PassengerService or ManagerService)
     public void DisplayPersonalBookingDetails(int bookingId, BookingService bookingService)
     {
         var booking = bookingService.ViewPersonalBookingDetails(bookingId);
@@ -104,4 +103,37 @@ public class Program
     }
 
 
-}
+    public static void RunMenu(ManagerService managerService)
+    {
+        while (true)
+        {
+            Console.WriteLine(@"Manager Menu
+--------------------------------------
+1. Filter by Flight
+2. Filter by Price
+3. Filter by Class
+4. Exit");
+            Console.Write("Enter your choice: ");
+
+            string choice = Console.ReadLine();
+            switch (choice)
+            {
+                case "1":
+                    managerService.FilterByFlight();
+                    break;
+                case "2":
+                    managerService.FilterByPrice();
+                    break;
+                case "3":
+                    managerService.FilterByClass();
+                    break;
+                case "4":
+                    Console.WriteLine("Exiting Manager Menu.");
+                    return;
+                default:
+                    Console.WriteLine("Invalid choice. Please try again.");
+                    break;
+            }
+        }
+    }
+    }

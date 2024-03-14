@@ -1,4 +1,4 @@
-﻿using ATP.DataAccessLayer.IGenericRepo;
+﻿using ATP.BusinessLogicLayer.IGenericRepo;
 using ATP.DataAccessLayer.Models;
 using CsvHelper;
 using System.Globalization;

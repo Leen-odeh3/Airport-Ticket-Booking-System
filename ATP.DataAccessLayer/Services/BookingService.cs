@@ -42,23 +42,11 @@ public class BookingService
     {
         return bookings;
     }
-    public void ViewPersonalBookingDetails(int bookingId)
+    public Booking ViewPersonalBookingDetails(int bookingId)
     {
-        var booking = bookings.Find(b => b.BookingId == bookingId);
-        if (booking is not null)
-        { 
-            Console.WriteLine($"Booking ID: {booking.BookingId}");
-            Console.WriteLine($"Flight Details:");
-            Console.WriteLine($"   Departure: {booking.Flight.DepartureCountry}");
-            Console.WriteLine($"   Destination: {booking.Flight.DestinationCountry}");
-            Console.WriteLine($"   Date: {booking.Flight.DepartureDate}");
-            Console.WriteLine($"   Class: {booking.Flight.Class}");
-        }
-        else
-        {
-            Console.WriteLine("Booking not found.");
-        }
+        return bookings.Find(b => b.BookingId == bookingId);
     }
+
     public List<Booking> FilterBookings(Func<Booking, bool> predicate)
     {
         return bookings.Where(predicate).ToList();

@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ATP.BusinessLogicLayer\ATP.BusinessLogicLayer.csproj" />
+    <ProjectReference Include="..\ATP.DataAccessLayer\ATP.DataAccessLayer.csproj" />
   </ItemGroup>
 
 </Project>

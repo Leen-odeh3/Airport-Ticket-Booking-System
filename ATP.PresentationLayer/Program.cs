@@ -84,4 +84,24 @@ public class Program
         }
         while (mainChoice != 3);
     }
+    // Inside your presentation layer (e.g., PassengerService or ManagerService)
+    public void DisplayPersonalBookingDetails(int bookingId, BookingService bookingService)
+    {
+        var booking = bookingService.ViewPersonalBookingDetails(bookingId);
+        if (booking is not null)
+        {
+            Console.WriteLine($"Booking ID: {booking.BookingId}");
+            Console.WriteLine($"Flight Details:");
+            Console.WriteLine($"   Departure: {booking.Flight.DepartureCountry}");
+            Console.WriteLine($"   Destination: {booking.Flight.DestinationCountry}");
+            Console.WriteLine($"   Date: {booking.Flight.DepartureDate}");
+            Console.WriteLine($"   Class: {booking.Flight.Class}");
+        }
+        else
+        {
+            Console.WriteLine("Booking not found.");
+        }
+    }
+
+
 }

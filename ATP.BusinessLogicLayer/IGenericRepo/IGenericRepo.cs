@@ -1,4 +1,4 @@
-﻿namespace ATP.DataAccessLayer.IGenericRepo;
+﻿namespace ATP.BusinessLogicLayer.IGenericRepo;
 
 public interface IGenericRepo<T>
 {

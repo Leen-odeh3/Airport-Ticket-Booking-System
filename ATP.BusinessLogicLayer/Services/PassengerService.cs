@@ -1,13 +1,14 @@
-﻿using ATP.DataAccessLayer.Models;
+﻿using ATP.BusinessLogicLayer.DTOs;
+
 
 namespace ATP.BusinessLogicLayer.Services;
 
 public class PassengerService
 {
-    private readonly List<Flight> availableFlights;
+    private readonly List<FlightDto> availableFlights;
     private readonly BookingService bookingService;
 
-    public PassengerService(List<Flight> availableFlights, BookingService bookingService)
+    public PassengerService(List<FlightDto> availableFlights, BookingService bookingService)
     {
         this.availableFlights = availableFlights;
         this.bookingService = bookingService;

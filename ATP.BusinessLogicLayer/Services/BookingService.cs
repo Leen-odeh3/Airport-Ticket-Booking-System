@@ -1,33 +1,32 @@
-﻿using ATP.DataAccessLayer.Models;
+﻿using ATP.BusinessLogicLayer.DTOs;
 using Microsoft.Extensions.Logging;
+
 public class BookingService
 {
-    private List<Booking> bookings;
+    private List<BookingDTO> bookings;
     private int nextBookingId;
     private readonly ILogger<BookingService> _logger;
+
     public BookingService(ILogger<BookingService> logger)
     {
-        bookings = new List<Booking>();
+        bookings = new List<BookingDTO>();
         nextBookingId = 1;
         _logger = logger;
     }
-    public void BookFlight(Flight flight)
+
+    public void BookFlight(FlightDto flight)
     {
         int bookingId = nextBookingId++;
-        var booking = new Booking
-        {
-            BookingId = bookingId,
-            Flight = flight
-        };
+        var booking = new BookingDTO(bookingId, flight.Id, flight.Class.ClassName, DateTime.Now);
         bookings.Add(booking);
         _logger.LogInformation($"Booking with ID {bookingId} successfully created for the flight from {flight.DepartureCountry} to {flight.DestinationCountry} on {flight.DepartureDate}.");
-
-
     }
+
+
     public void CancelBooking(int bookingId)
     {
         var booking = bookings.Find(b => b.BookingId == bookingId);
-        if (booking is not null)
+        if (booking != null)
         {
             bookings.Remove(booking);
             _logger.LogInformation("Booking canceled successfully.");
@@ -38,18 +37,18 @@ public class BookingService
         }
     }
 
-    public List<Booking> GetBookings()
+    public List<BookingDTO> GetBookings()
     {
         return bookings;
     }
-    public Booking ViewPersonalBookingDetails(int bookingId)
+
+    public BookingDTO ViewPersonalBookingDetails(int bookingId)
     {
         return bookings.Find(b => b.BookingId == bookingId);
     }
 
-    public List<Booking> FilterBookings(Func<Booking, bool> predicate)
+    public List<BookingDTO> FilterBookings(Func<BookingDTO, bool> predicate)
     {
         return bookings.Where(predicate).ToList();
     }
-
 }

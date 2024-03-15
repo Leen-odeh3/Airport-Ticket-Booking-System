@@ -1,6 +1,5 @@
 ﻿using ATP.BusinessLogicLayer.DTOs;
 
-
 namespace ATP.BusinessLogicLayer.Services;
 
 public class PassengerService

@@ -1,13 +1,13 @@
-﻿namespace ATP.BusinessLogicLayer.DTOs
+﻿namespace ATP.BusinessLogicLayer.Models
 {
-    public class BookingDTO
+    public class BookingDomainModel
     {
         public int BookingId { get; set; }
         public int FlightId { get; set; }
-        public string FlightClass { get; set; }
+        public FlightClass FlightClass { get; set; }
         public DateTime BookingDate { get; set; }
 
-        public BookingDTO(int bookingId, int flightId, string flightClass, DateTime bookingDate)
+        public BookingDomainModel(int bookingId, int flightId, FlightClass flightClass, DateTime bookingDate)
         {
             BookingId = bookingId;
             FlightId = flightId;
@@ -16,3 +16,5 @@
         }
     }
 }
+
+public record BookingDto(string name);

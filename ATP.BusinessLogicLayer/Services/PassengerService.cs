@@ -1,18 +1,18 @@
-﻿using ATP.BusinessLogicLayer.DTOs;
+﻿using ATP.BusinessLogicLayer.Models;
 
 namespace ATP.BusinessLogicLayer.Services;
 
-public class PassengerService
+public class PassengerService // Use Interfaces
 {
-    private readonly List<FlightDto> availableFlights;
-    private readonly BookingService bookingService;
+    private readonly List<FlightDomainModel> _availableFlights;
+    private readonly BookingService _bookingService;
 
-    public PassengerService(List<FlightDto> availableFlights, BookingService bookingService)
+    public PassengerService(List<FlightDomainModel> availableFlights, BookingService bookingService)
     {
-        this.availableFlights = availableFlights;
-        this.bookingService = bookingService;
+        _availableFlights = availableFlights;
+        _bookingService = bookingService;
     }
-
+// get, del, update, add
     public void RunMenu()
     {
         Console.WriteLine(@"Passenger Menu
@@ -37,7 +37,7 @@ public class PassengerService
                 BookFlight();
                 break;
             case 2:
-               ViewPersonalBookings();
+                ViewPersonalBookings();
                 break;
             case 3:
                 CancelBooking();
@@ -47,14 +47,15 @@ public class PassengerService
                 break;
         }
     }
+
     private void BookFlight()
     {
         Console.WriteLine("Booking a flight...");
 
         Console.WriteLine("Available Flights:");
-        foreach (var flight in availableFlights)
+        foreach (var flight in _availableFlights)
         {
-            Console.WriteLine($"Flight ID: {flight.Id}, Departure: {flight.DepartureCountry}, Destination: {flight.DestinationCountry}, Date: {flight.DepartureDate}, Class: {flight.Class}");
+            Console.WriteLine($"ID: {flight.Id}, Departure: {flight.DepartureCountry}, Destination: {flight.DestinationCountry}, Date: {flight.DepartureDate}, Price: {flight.Price}");
         }
 
         Console.Write("Enter the ID of the flight you want to book: ");
@@ -64,15 +65,16 @@ public class PassengerService
             return;
         }
 
-        var selectedFlight = availableFlights.FirstOrDefault(f => f.Id == flightId);
+        var selectedFlight = _availableFlights.FirstOrDefault(f => f.Id == flightId);
         if (selectedFlight == null)
         {
             Console.WriteLine("Flight not found.");
             return;
         }
 
-        bookingService.BookFlight(selectedFlight); // Use BookingService to book the flight
+        _bookingService.BookFlight(selectedFlight); // Use BookingService to book the flight
     }
+
     private void CancelBooking()
     {
         Console.Write("Enter booking ID to cancel: ");
@@ -82,8 +84,9 @@ public class PassengerService
             return;
         }
 
-        bookingService.CancelBooking(bookingId);
+        _bookingService.CancelBooking(bookingId);
     }
+
     private void ViewPersonalBookings()
     {
         Console.Write("Enter booking ID to view details: ");
@@ -93,8 +96,6 @@ public class PassengerService
             return;
         }
 
-        bookingService.ViewPersonalBookingDetails(bookingId);
+        _bookingService.ViewPersonalBookingDetails(bookingId);
     }
-
-
 }

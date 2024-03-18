@@ -1,5 +1,5 @@
-﻿
-namespace ATP.DataAccessLayer.Enum;
+﻿namespace ATP.DataAccessLayer.Enum;
+
 public enum FlightClass
 {
     Economy,

@@ -1,7 +1,7 @@
 ﻿
-namespace ATP.BusinessLogicLayer.DTOs;
+namespace ATP.BusinessLogicLayer.Models;
 
-public class FlightDto
+public class FlightDomainModel
 {
     public int Id { get; set; }
     public double Price { get; set; }
@@ -10,5 +10,5 @@ public class FlightDto
     public DateTime DepartureDate { get; set; }
     public string DepartureAirport { get; set; }
     public string ArrivalAirport { get; set; }
-    public FlightClassDTO Class { get; set; }
+    public FlightClass Class { get; set; }
 }

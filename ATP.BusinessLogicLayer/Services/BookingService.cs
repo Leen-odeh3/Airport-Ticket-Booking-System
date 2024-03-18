@@ -1,23 +1,23 @@
-﻿using ATP.BusinessLogicLayer.DTOs;
+﻿using ATP.BusinessLogicLayer.Models;
 using Microsoft.Extensions.Logging;
 
 public class BookingService
 {
-    private List<BookingDTO> bookings;
+    private List<BookingDomainModel> bookings; // Create csv file for bookings
     private int nextBookingId;
     private readonly ILogger<BookingService> _logger;
 
     public BookingService(ILogger<BookingService> logger)
     {
-        bookings = new List<BookingDTO>();
+        bookings = new List<BookingDomainModel>();
         nextBookingId = 1;
         _logger = logger;
     }
 
-    public void BookFlight(FlightDto flight)
+    public void BookFlight(FlightDomainModel flight)
     {
         int bookingId = nextBookingId++;
-        var booking = new BookingDTO(bookingId, flight.Id, flight.Class.ClassName, DateTime.Now);
+        var booking = new BookingDomainModel(bookingId, flight.Id, flight.Class, DateTime.Now);
         bookings.Add(booking);
         _logger.LogInformation($"Booking with ID {bookingId} successfully created for the flight from {flight.DepartureCountry} to {flight.DestinationCountry} on {flight.DepartureDate}.");
     }
@@ -37,17 +37,17 @@ public class BookingService
         }
     }
 
-    public List<BookingDTO> GetBookings()
+    public List<BookingDomainModel> GetBookings()
     {
         return bookings;
     }
 
-    public BookingDTO ViewPersonalBookingDetails(int bookingId)
+    public BookingDomainModel ViewPersonalBookingDetails(int bookingId)
     {
-        return bookings.Find(b => b.BookingId == bookingId);
+        return bookings.FirstOrDefault(b => b.BookingId == bookingId);
     }
 
-    public List<BookingDTO> FilterBookings(Func<BookingDTO, bool> predicate)
+    public List<BookingDomainModel> FilterBookings(Func<BookingDomainModel, bool> predicate)
     {
         return bookings.Where(predicate).ToList();
     }

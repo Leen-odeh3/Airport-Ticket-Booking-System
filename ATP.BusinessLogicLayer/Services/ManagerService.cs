@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using ATP.BusinessLogicLayer.DTOs;
+﻿using ATP.BusinessLogicLayer.Models;
 
 namespace ATP.BusinessLogicLayer.Services
 {
     public class ManagerService
     {
-        private readonly List<FlightDto> availableFlights;
+        private readonly List<FlightDomainModel> availableFlights;
 
-        public ManagerService(List<FlightDto> flights)
+        public ManagerService(List<FlightDomainModel> flights)
         {
             availableFlights = flights;
         }
 
-        private void FilterByFlight()
+        public void FilterByFlight()
         {
             Console.WriteLine("Filter by Flight:");
             Console.Write("Enter Departure Country: ");
@@ -30,7 +28,7 @@ namespace ATP.BusinessLogicLayer.Services
             DisplayFilteredFlights(filteredFlights);
         }
 
-        private void FilterByPrice()
+        public void FilterByPrice()
         {
             Console.WriteLine("Filter by Price:");
             Console.Write("Enter Minimum Price: ");
@@ -60,13 +58,13 @@ namespace ATP.BusinessLogicLayer.Services
             DisplayFilteredFlights(filteredFlights);
         }
 
-        private void FilterByClass()
+        public void FilterByClass()
         {
             Console.WriteLine("Filter by Class:");
-            Console.WriteLine("Enter Class (Economy, Business, FirstClass):");
-            string inputClass = Console.ReadLine().Trim();
+            Console.WriteLine("Enter Class (Economy, Business, FirstClass):"); //Use 1,2,3 instead of string
+            var inputClass = Console.ReadLine().Trim();
 
-            if (!Enum.TryParse(inputClass, true, out FlightClassDTO flightClass))
+            if (!Enum.TryParse(inputClass, true, out FlightClass flightClass))
             {
                 Console.WriteLine("Invalid class input.");
                 return;
@@ -80,14 +78,14 @@ namespace ATP.BusinessLogicLayer.Services
         }
 
 
-        private void DisplayFilteredFlights(List<FlightDto> flights)
+        private void DisplayFilteredFlights(List<FlightDomainModel> flights)
         {
             if (flights.Count > 0)
             {
                 Console.WriteLine("Filtered Flights:");
                 foreach (var flight in flights)
                 {
-                    Console.WriteLine($"Flight ID: {flight.Id}, Departure Country: {flight.DepartureCountry}, Destination Country: {flight.DestinationCountry}, Date: {flight.DepartureDate}, Class: {flight.Class.ClassName}, Price: {flight.Price}");
+                    Console.WriteLine($"Flight ID: {flight.Id}, Departure Country: {flight.DepartureCountry}, Destination Country: {flight.DestinationCountry}, Date: {flight.DepartureDate}, Class: {flight.Class}, Price: {flight.Price}");
                 }
             }
             else

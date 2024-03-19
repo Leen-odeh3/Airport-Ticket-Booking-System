@@ -1,6 +1,6 @@
 ﻿using ATP.BusinessLogicLayer.Models;
 using ATP.BusinessLogicLayer.Services;
-using ATP.DataAccessLayer;
+using ATP.DataAccessLayer.Repository;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;

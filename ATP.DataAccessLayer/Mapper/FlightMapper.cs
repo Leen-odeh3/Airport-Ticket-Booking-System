@@ -5,7 +5,20 @@ using Riok.Mapperly.Abstractions;
 namespace ATP.DataAccessLayer.Mapper;
 
 [Mapper]
+
 public partial class FlightMapper
 {
-    public partial FlightDomainModel MapToDomain(Flight model);
+    public FlightDomainModel MapToDomain(Flight model)
+    {
+        return new FlightDomainModel(
+            model.Id,
+            model.Price,
+            model.DepartureCountry,
+            model.DestinationCountry,
+            model.DepartureDate,
+            model.DepartureAirport,
+            model.ArrivalAirport,
+            (FlightClass)model.Class
+        );
+    }
 }

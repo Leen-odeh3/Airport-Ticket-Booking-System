@@ -2,6 +2,10 @@
 {
     public class BookingDomainModel
     {
+        private int id;
+        private FlightClass @class;
+        private DateTime now;
+
         public int BookingId { get; set; }
         public int FlightId { get; set; }
         public FlightClass FlightClass { get; set; }
@@ -17,6 +21,14 @@
             BookingDate = bookingDate;
             DepartureCountry = departureCountry;
             DestinationCountry = destinationCountry;
+        }
+
+        public BookingDomainModel(int bookingId, int id, FlightClass @class, DateTime now)
+        {
+            BookingId = bookingId;
+            this.id = id;
+            this.@class = @class;
+            this.now = now;
         }
     }
 }

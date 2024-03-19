@@ -1,6 +1,5 @@
 ﻿
 namespace ATP.BusinessLogicLayer.Models;
-
 public class FlightDomainModel
 {
     public FlightDomainModel(int id, double price, string departureCountry, string destinationCountry, DateTime departureDate, string departureAirport, string arrivalAirport, FlightClass flightClass)
@@ -14,7 +13,6 @@ public class FlightDomainModel
         ArrivalAirport = arrivalAirport;
         Class = flightClass;
     }
-
     public int Id { get; set; }
     public double Price { get; set; }
     public string DepartureCountry { get; set; }

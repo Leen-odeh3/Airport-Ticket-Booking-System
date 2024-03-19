@@ -1,5 +1,6 @@
 ﻿using ATP.BusinessLogicLayer.Models;
 using ATP.BusinessLogicLayer.Services;
+using ATP.DataAccessLayer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using FlightClass = ATP.DataAccessLayer.Enum.FlightClass;
@@ -32,10 +33,11 @@ public class Program
 
         var bookingService = new BookingService(NullLogger<BookingService>.Instance);
 
-      Console.WriteLine("Welcome !");
+        Console.WriteLine("Welcome !");
         var csvFilePath = configuration["CsvFilePath"];
-       var csvFlightWriter = new CsvFlight(); // You will use the repo here instead
-         csvFlightWriter.WriteFlightsToCsv(flights, csvFilePath);
+        FlightRepository flightRepository = new(csvFilePath);
+        flightRepository.WriteListToCsv(flights);
+
 
         int mainChoice;
         do

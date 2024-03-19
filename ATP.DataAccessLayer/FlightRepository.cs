@@ -12,6 +12,8 @@ public class FlightRepository : IGenericRepo<FlightDomainModel> // use loggers
     private List<FlightDomainModel> _flights;
     private readonly string _csvFilePath;
     private FlightMapper _mapper;
+    private string? csvFilePath;
+    private object mapper;
     private readonly ILogger<FlightRepository> _logger;
 
     public FlightRepository(string csvFilePath, FlightMapper mapper, ILogger<FlightRepository> logger)
@@ -20,6 +22,17 @@ public class FlightRepository : IGenericRepo<FlightDomainModel> // use loggers
         _mapper = mapper;
         _flights = LoadFlightsFromCsv(csvFilePath);
         _logger = logger;
+    }
+
+    public FlightRepository(string? csvFilePath, object mapper)
+    {
+        this.csvFilePath = csvFilePath;
+        this.mapper = mapper;
+    }
+
+    public FlightRepository(string? csvFilePath)
+    {
+        this.csvFilePath = csvFilePath;
     }
 
     private List<FlightDomainModel> LoadFlightsFromCsv(string csvFilePath)

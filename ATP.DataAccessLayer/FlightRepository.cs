@@ -75,6 +75,12 @@ public class FlightRepository : IGenericRepo<FlightDomainModel> // use loggers
 
     public void WriteListToCsv(List<FlightDomainModel> list)
     {
+        if (string.IsNullOrEmpty(_csvFilePath))
+        {
+            Console.WriteLine("CSV file path is null or empty.");
+            return;
+        }
+
         try
         {
             using var writer = new StreamWriter(_csvFilePath);
@@ -86,6 +92,7 @@ public class FlightRepository : IGenericRepo<FlightDomainModel> // use loggers
             _logger.LogError(ex, "Failed to write flights to CSV file.");
         }
     }
+
 
 
     public ICollection<FlightDomainModel> GetAll()

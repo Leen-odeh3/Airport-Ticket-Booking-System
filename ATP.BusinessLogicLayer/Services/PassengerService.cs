@@ -1,10 +1,11 @@
-﻿using ATP.BusinessLogicLayer.Abstract;
-using ATP.BusinessLogicLayer.Models;
+﻿using ATP.BusinessLogicLayer.Models;
+using ATP.BusinessLogicLayer.Abstract;
 
 namespace ATP.BusinessLogicLayer.Services;
 
 public class PassengerService : IPassengerService
 {
+    private int nextBookingId;
     private readonly List<FlightDomainModel> _availableFlights;
     private readonly BookingService _bookingService;
 
@@ -12,8 +13,9 @@ public class PassengerService : IPassengerService
     {
         _availableFlights = availableFlights;
         _bookingService = bookingService;
+        nextBookingId = 1;
     }
-// get, del, update, add
+
     public void RunMenu()
     {
         Console.WriteLine(@"Passenger Menu
@@ -23,7 +25,6 @@ public class PassengerService : IPassengerService
 3. Cancel Booking
 4. Go Back");
         Console.Write("Enter your choice: ");
-
 
         int passengerChoice;
         if (!int.TryParse(Console.ReadLine(), out passengerChoice))
@@ -56,7 +57,7 @@ public class PassengerService : IPassengerService
         Console.WriteLine("Available Flights:");
         foreach (var flight in _availableFlights)
         {
-            Console.WriteLine($"ID: {flight.Id}, Departure: {flight.DepartureCountry}, Destination: {flight.DestinationCountry}, Date: {flight.DepartureDate}, Price: {flight.Price}");
+            Console.WriteLine($"Flight ID: {flight.Id}, Departure: {flight.DepartureCountry}, Destination: {flight.DestinationCountry}, Date: {flight.DepartureDate}, Class: {flight.Class}");
         }
 
         Console.Write("Enter the ID of the flight you want to book: ");
@@ -67,13 +68,26 @@ public class PassengerService : IPassengerService
         }
 
         var selectedFlight = _availableFlights.FirstOrDefault(f => f.Id == flightId);
-        if (selectedFlight == null)
+        if (selectedFlight is null)
         {
             Console.WriteLine("Flight not found.");
             return;
         }
 
-        _bookingService.BookFlight(selectedFlight); // Use BookingService to book the flight
+        _bookingService.BookFlight(selectedFlight);
+    }
+
+
+    private void ViewPersonalBookings()
+    {
+        Console.Write("Enter booking ID to view details: ");
+        if (!int.TryParse(Console.ReadLine(), out int bookingId))
+        {
+            Console.WriteLine("Invalid booking ID.");
+            return;
+        }
+
+        _bookingService.ViewPersonalBookingDetails(bookingId);
     }
 
     private void CancelBooking()
@@ -86,17 +100,5 @@ public class PassengerService : IPassengerService
         }
 
         _bookingService.CancelBooking(bookingId);
-    }
-
-    private void ViewPersonalBookings()
-    {
-        Console.Write("Enter booking ID to view details: ");
-        if (!int.TryParse(Console.ReadLine(), out int bookingId))
-        {
-            Console.WriteLine("Invalid booking ID.");
-            return;
-        }
-
-        _bookingService.ViewPersonalBookingDetails(bookingId);
     }
 }

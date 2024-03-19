@@ -61,14 +61,22 @@ namespace ATP.BusinessLogicLayer.Services
         public void FilterByClass()
         {
             Console.WriteLine("Filter by Class:");
-            Console.WriteLine("Enter Class (Economy, Business, FirstClass):"); //Use 1,2,3 instead of string
+            Console.WriteLine("Enter Class (1 for Economy, 2 for Business, 3 for FirstClass):");
             var inputClass = Console.ReadLine().Trim();
 
-            if (!Enum.TryParse(inputClass, true, out FlightClass flightClass))
+            if (!int.TryParse(inputClass, out int classNumber))
             {
                 Console.WriteLine("Invalid class input.");
                 return;
             }
+
+            if (!Enum.IsDefined(typeof(FlightClass), classNumber))
+            {
+                Console.WriteLine("Invalid class input.");
+                return;
+            }
+
+            var flightClass = (FlightClass)classNumber;
 
             var filteredFlights = availableFlights.FindAll(flight =>
                 flight.Class == flightClass
@@ -76,7 +84,6 @@ namespace ATP.BusinessLogicLayer.Services
 
             DisplayFilteredFlights(filteredFlights);
         }
-
 
         private void DisplayFilteredFlights(List<FlightDomainModel> flights)
         {

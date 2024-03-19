@@ -2,6 +2,7 @@
 using CsvHelper;
 using System.Globalization;
 
+
 namespace ATP.DataAccessLayer.Repository;
 
 public class BookingRepository
@@ -17,9 +18,11 @@ public class BookingRepository
     {
         try
         {
-            using var writer = new StreamWriter(_csvFilePath);
-            using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-            csv.WriteRecords(bookings);
+            using (var writer = new StreamWriter(_csvFilePath))
+            using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+            {
+                csv.WriteRecords(bookings);
+            }
         }
         catch (Exception ex)
         {
@@ -31,9 +34,11 @@ public class BookingRepository
     {
         try
         {
-            using var reader = new StreamReader(_csvFilePath);
-            using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-            return csv.GetRecords<BookingDomainModel>().ToList();
+            using (var reader = new StreamReader(_csvFilePath))
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            {
+                return csv.GetRecords<BookingDomainModel>().ToList();
+            }
         }
         catch (Exception ex)
         {

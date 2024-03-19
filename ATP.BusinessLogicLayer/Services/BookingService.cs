@@ -17,7 +17,7 @@ public class BookingService
     public void BookFlight(FlightDomainModel flight)
     {
         int bookingId = nextBookingId++;
-        var booking = new BookingDomainModel(bookingId, flight.Id, flight.Class, DateTime.Now);
+        var booking = new BookingDomainModel(bookingId, flight.Id, flight.Class, DateTime.Now, flight.DepartureCountry, flight.DestinationCountry);
         bookings.Add(booking);
         _logger.LogInformation($"Booking with ID {bookingId} successfully created for the flight from {flight.DepartureCountry} to {flight.DestinationCountry} on {flight.DepartureDate}.");
     }
@@ -51,4 +51,5 @@ public class BookingService
     {
         return bookings.Where(predicate).ToList();
     }
+
 }

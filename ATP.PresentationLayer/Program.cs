@@ -3,9 +3,6 @@ using ATP.BusinessLogicLayer.Services;
 using ATP.DataAccessLayer.Repository;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using FlightClass = ATP.DataAccessLayer.Enum.FlightClass;
 
 namespace ATP.PresentationLayer
@@ -33,7 +30,10 @@ namespace ATP.PresentationLayer
                 new FlightDomainModel(6, 600.0, "China", "Singapore", new DateTime(2024, 4, 5), "PEK", "SIN", (BusinessLogicLayer.Models.FlightClass)FlightClass.FirstClass)
             };
 
-            var bookingService = new BookingService(NullLogger<BookingService>.Instance);
+            var csvFileBookingPath = configuration["CsvFileBookingPath"];
+            var bookingService = new BookingService(csvFileBookingPath, NullLogger<BookingService>.Instance);
+          
+
 
             Console.WriteLine("Welcome !");
             var csvFilePath = configuration["CsvFilePath"];

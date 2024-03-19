@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 public class BookingService
 {
-    private List<BookingDomainModel> bookings; // Create csv file for bookings
+    private List<BookingDomainModel> bookings;
     private int nextBookingId;
     private readonly ILogger<BookingService> _logger;
 

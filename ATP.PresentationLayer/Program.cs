@@ -1,6 +1,5 @@
 ﻿using ATP.BusinessLogicLayer.Models;
 using ATP.BusinessLogicLayer.Services;
-using ATP.DataAccessLayer.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using FlightClass = ATP.DataAccessLayer.Enum.FlightClass;
@@ -23,20 +22,20 @@ public class Program
 
         var flights = new List<FlightDomainModel>
         {
-            // new FlightDomainModel(1, 100.0, "USA", "UK", new DateTime(2024, 3, 10), "JFK", "LHR", FlightClass.Economy),
-            // new FlightDomainModel(2, 500.0, "UK", "France", new DateTime(2024, 3, 15), "LHR", "CDG", FlightClass.Business),
-            // new FlightDomainModel(3, 300.0, "Germany", "Italy", new DateTime(2024, 3, 20), "TXL", "FCO", FlightClass.FirstClass),
-            // new FlightDomainModel(4, 200.0, "Spain", "Greece", new DateTime(2024, 3, 25), "MAD", "ATH", FlightClass.Economy),
-            // new FlightDomainModel(5, 400.0, "Australia", "Japan", new DateTime(2024, 3, 30), "SYD", "HND", FlightClass.Business),
-            // new FlightDomainModel(6, 600.0, "China", "Singapore", new DateTime(2024, 4, 5), "PEK", "SIN", FlightClass.FirstClass)
+            new FlightDomainModel(1, 100.0, "USA", "UK", new DateTime(2024, 3, 10), "JFK", "LHR", (BusinessLogicLayer.Models.FlightClass)FlightClass.Economy),
+            new FlightDomainModel(2, 500.0, "UK", "France", new DateTime(2024, 3, 15), "LHR", "CDG", (BusinessLogicLayer.Models.FlightClass)FlightClass.Business),
+            new FlightDomainModel(3, 300.0, "Germany", "Italy", new DateTime(2024, 3, 20), "TXL", "FCO", (BusinessLogicLayer.Models.FlightClass)FlightClass.FirstClass),
+            new FlightDomainModel(4, 200.0, "Spain", "Greece", new DateTime(2024, 3, 25), "MAD", "ATH", (BusinessLogicLayer.Models.FlightClass)FlightClass.Economy),
+            new FlightDomainModel(5, 400.0, "Australia", "Japan", new DateTime(2024, 3, 30), "SYD", "HND", (BusinessLogicLayer.Models.FlightClass)FlightClass.Business),
+            new FlightDomainModel(6, 600.0, "China", "Singapore", new DateTime(2024, 4, 5), "PEK", "SIN", (BusinessLogicLayer.Models.FlightClass)FlightClass.FirstClass)
         };
 
         var bookingService = new BookingService(NullLogger<BookingService>.Instance);
 
-        // Console.WriteLine("Welcome !");
-        // var csvFilePath = configuration["CsvFilePath"];
-        // var csvFlightWriter = new CsvFlight(); // You will use the repo here instead
-        // csvFlightWriter.WriteFlightsToCsv(flights, csvFilePath);
+      Console.WriteLine("Welcome !");
+        var csvFilePath = configuration["CsvFilePath"];
+       var csvFlightWriter = new CsvFlight(); // You will use the repo here instead
+         csvFlightWriter.WriteFlightsToCsv(flights, csvFilePath);
 
         int mainChoice;
         do
@@ -92,10 +91,11 @@ public class Program
         {
             Console.WriteLine($"Booking ID: {booking.BookingId}");
             Console.WriteLine($"Flight Details:");
-            // Console.WriteLine($"   Departure: {booking.Flight.DepartureCountry}");
-            // Console.WriteLine($"   Destination: {booking.Flight.DestinationCountry}");
-            // Console.WriteLine($"   Date: {booking.Flight.DepartureDate}");
-            // Console.WriteLine($"   Class: {booking.Flight.Class}");
+            Console.WriteLine($"Departure: {booking.DepartureCountry}");
+            Console.WriteLine($"Destination: {booking.DestinationCountry}");
+            Console.WriteLine($"Date: {booking.BookingDate}");
+            Console.WriteLine($"Class: {booking.FlightClass}");
+
         }
         else
         {

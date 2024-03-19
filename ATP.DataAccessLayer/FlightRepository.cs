@@ -12,21 +12,33 @@ public class FlightRepository : IGenericRepo<FlightDomainModel> // use loggers
     private List<FlightDomainModel> _flights;
     private readonly string _csvFilePath;
     private FlightMapper _mapper;
+    private readonly ILogger<FlightRepository> _logger;
 
-    public FlightRepository(string csvFilePath, FlightMapper mapper)
+    public FlightRepository(string csvFilePath, FlightMapper mapper, ILogger<FlightRepository> logger)
     {
         _csvFilePath = csvFilePath;
         _mapper = mapper;
         _flights = LoadFlightsFromCsv(csvFilePath);
+        _logger = logger;
     }
 
     private List<FlightDomainModel> LoadFlightsFromCsv(string csvFilePath)
     {
-        using var reader = new StreamReader(csvFilePath);
-        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-        var flights = csv.GetRecords<Flight>().ToList();
-        var result = flights.Select(f => _mapper.MapToDomain(f)).ToList();
-        return result;
+        try
+        {
+            using (var reader = new StreamReader(csvFilePath))
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            {
+                var flights = csv.GetRecords<Flight>().ToList();
+                var result = flights.Select(f => _mapper.MapToDomain(f)).ToList();
+                return result;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to load flights from CSV file.");
+            return new List<FlightDomainModel>();
+        }
     }
 
     public FlightDomainModel GetById(int id)
@@ -50,10 +62,18 @@ public class FlightRepository : IGenericRepo<FlightDomainModel> // use loggers
 
     public void WriteListToCsv(List<FlightDomainModel> list)
     {
-        using var writer = new StreamWriter(_csvFilePath);
-        using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-        csv.WriteRecords(list);
+        try
+        {
+            using var writer = new StreamWriter(_csvFilePath);
+            using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+            csv.WriteRecords(list);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to write flights to CSV file.");
+        }
     }
+
 
     public ICollection<FlightDomainModel> GetAll()
     {

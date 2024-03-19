@@ -1,8 +1,9 @@
-﻿using ATP.BusinessLogicLayer.Models;
+﻿using ATP.BusinessLogicLayer.Abstract;
+using ATP.BusinessLogicLayer.Models;
 
 namespace ATP.BusinessLogicLayer.Services;
 
-public class PassengerService // Use Interfaces
+public class PassengerService : IPassengerService
 {
     private readonly List<FlightDomainModel> _availableFlights;
     private readonly BookingService _bookingService;

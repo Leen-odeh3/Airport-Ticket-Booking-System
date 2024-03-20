@@ -1,0 +1,7 @@
+Id,Price,DepartureCountry,DestinationCountry,DepartureDate,DepartureAirport,ArrivalAirport,Class
+1,100,USA,UK,03/10/2024 00:00:00,JFK,LHR,Economy
+2,500,UK,France,03/15/2024 00:00:00,LHR,CDG,Business
+3,300,Germany,Italy,03/20/2024 00:00:00,TXL,FCO,FirstClass
+4,200,Spain,Greece,03/25/2024 00:00:00,MAD,ATH,Economy
+5,400,Australia,Japan,03/30/2024 00:00:00,SYD,HND,Business
+6,600,China,Singapore,04/05/2024 00:00:00,PEK,SIN,FirstClass

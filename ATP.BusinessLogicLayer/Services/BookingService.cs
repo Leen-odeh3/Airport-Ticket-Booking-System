@@ -48,7 +48,7 @@ public class BookingService
     public void CancelBooking(int bookingId)
     {
         var booking = bookings.Find(b => b.BookingId == bookingId);
-        if (booking != null)
+        if (booking is not null)
         {
             bookings.Remove(booking);
             _logger.LogInformation("Booking canceled successfully.");

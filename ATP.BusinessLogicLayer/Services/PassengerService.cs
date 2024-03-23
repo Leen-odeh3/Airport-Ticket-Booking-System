@@ -87,7 +87,20 @@ public class PassengerService : IPassengerService
             return;
         }
 
-        _bookingService.ViewPersonalBookingDetails(bookingId);
+        var booking = _bookingService.ViewPersonalBookingDetails(bookingId);
+        if (booking is not null)
+        {
+            Console.WriteLine($"Booking ID: {booking.BookingId}");
+            Console.WriteLine($"Flight Details:");
+            Console.WriteLine($"Departure: {booking.DepartureCountry}");
+            Console.WriteLine($"Destination: {booking.DestinationCountry}");
+            Console.WriteLine($"Date: {booking.BookingDate}");
+            Console.WriteLine($"Class: {booking.FlightClass}");
+        }
+        else
+        {
+            Console.WriteLine("Booking not found.");
+        }
     }
 
     private void CancelBooking()

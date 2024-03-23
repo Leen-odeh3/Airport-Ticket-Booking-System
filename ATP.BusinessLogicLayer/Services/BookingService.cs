@@ -18,15 +18,14 @@ public class BookingService
         _csvFilePath = csvFilePath;
     }
 
-
     public void BookFlight(FlightDomainModel flight)
     {
-        int bookingId = nextBookingId++;
-        var booking = new BookingDomainModel(bookingId, flight.Id, flight.Class, DateTime.Now, flight.DepartureCountry, flight.DestinationCountry);
+        var booking = new BookingDomainModel(flight.Id, flight.Id, flight.Class, flight.DepartureDate, flight.DepartureCountry, flight.DestinationCountry);
         bookings.Add(booking);
         WriteBookingToCsv(booking);
-        _logger.LogInformation($"Booking with ID {bookingId} successfully created for the flight from {flight.DepartureCountry} to {flight.DestinationCountry} on {flight.DepartureDate}.");
+        _logger.LogInformation($"Booking with ID {flight.Id} successfully created for the flight from {flight.DepartureCountry} to {flight.DestinationCountry} on {flight.DepartureDate}.");
     }
+
 
     private void WriteBookingToCsv(BookingDomainModel booking)
     {

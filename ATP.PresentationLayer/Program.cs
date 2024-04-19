@@ -3,7 +3,9 @@ using ATP.BusinessLogicLayer.Services;
 using ATP.DataAccessLayer.Repository;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
-using FlightClass = ATP.DataAccessLayer.Enum.FlightClass;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace ATP.PresentationLayer
 {
@@ -22,24 +24,21 @@ namespace ATP.PresentationLayer
 
             var flights = new List<FlightDomainModel>
             {
-                new FlightDomainModel(1, 100.0, "USA", "UK", new DateTime(2024, 3, 10), "JFK", "LHR", (BusinessLogicLayer.Models.FlightClass)FlightClass.Economy),
-                new FlightDomainModel(2, 500.0, "UK", "France", new DateTime(2024, 3, 15), "LHR", "CDG", (BusinessLogicLayer.Models.FlightClass)FlightClass.Business),
-                new FlightDomainModel(3, 300.0, "Germany", "Italy", new DateTime(2024, 3, 20), "TXL", "FCO", (BusinessLogicLayer.Models.FlightClass)FlightClass.FirstClass),
-                new FlightDomainModel(4, 200.0, "Spain", "Greece", new DateTime(2024, 3, 25), "MAD", "ATH", (BusinessLogicLayer.Models.FlightClass)FlightClass.Economy),
-                new FlightDomainModel(5, 400.0, "Australia", "Japan", new DateTime(2024, 3, 30), "SYD", "HND", (BusinessLogicLayer.Models.FlightClass)FlightClass.Business),
-                new FlightDomainModel(6, 600.0, "China", "Singapore", new DateTime(2024, 4, 5), "PEK", "SIN", (BusinessLogicLayer.Models.FlightClass)FlightClass.FirstClass)
+                new FlightDomainModel(1, 100.0, "USA", "UK", new DateTime(2024, 3, 10), "JFK", "LHR", FlightClass.Economy),
+                new FlightDomainModel(2, 500.0, "UK", "France", new DateTime(2024, 3, 15), "LHR", "CDG", FlightClass.Business),
+                new FlightDomainModel(3, 300.0, "Germany", "Italy", new DateTime(2024, 3, 20), "TXL", "FCO", FlightClass.First),
+                new FlightDomainModel(4, 200.0, "Spain", "Greece", new DateTime(2024, 3, 25), "MAD", "ATH", FlightClass.Economy),
+                new FlightDomainModel(5, 400.0, "Australia", "Japan", new DateTime(2024, 3, 30), "SYD", "HND", FlightClass.Business),
+                new FlightDomainModel(6, 600.0, "China", "Singapore", new DateTime(2024, 4, 5), "PEK", "SIN", FlightClass.First)
             };
 
             var csvFileBookingPath = configuration["CsvFileBookingPath"];
             var bookingService = new BookingService(csvFileBookingPath, NullLogger<BookingService>.Instance);
-          
-
 
             Console.WriteLine("Welcome !");
             var csvFilePath = configuration["CsvFilePath"];
             FlightRepository flightRepository = new(csvFilePath);
             flightRepository.WriteListToCsv(flights);
-
 
             int mainChoice;
             do
@@ -73,18 +72,20 @@ namespace ATP.PresentationLayer
                         break;
                 }
 
-                Console.WriteLine("Current Bookings:");
-                foreach (var b in bookingService.GetBookings())
+                if (mainChoice != 3)
                 {
-                    Console.WriteLine($"Booking ID: {b.BookingId}");
-                    Console.WriteLine($"Flight Details:");
-                    Console.WriteLine($"Departure: {b.DepartureCountry}");
-                    Console.WriteLine($"Destination: {b.DestinationCountry}");
-                    Console.WriteLine($"Date: {b.BookingDate}");
-                    Console.WriteLine($"Class: {b.FlightClass}");
+                    Console.WriteLine("Current Bookings:");
+                    foreach (var b in bookingService.GetBookings())
+                    {
+                        Console.WriteLine($"Booking ID: {b.BookingId}");
+                        Console.WriteLine($"Flight Details:");
+                        Console.WriteLine($"Departure: {b.DepartureCountry}");
+                        Console.WriteLine($"Destination: {b.DestinationCountry}");
+                        Console.WriteLine($"Date: {b.BookingDate}");
+                        Console.WriteLine($"Class: {b.FlightClass}");
+                    }
+                    Console.WriteLine();
                 }
-
-                Console.WriteLine();
             } while (mainChoice != 3);
         }
 

@@ -61,7 +61,7 @@ namespace ATP.BusinessLogicLayer.Services
         public void FilterByClass()
         {
             Console.WriteLine("Filter by Class:");
-            Console.WriteLine("Enter Class (1 for Economy, 2 for Business, 3 for FirstClass):");
+            Console.WriteLine("Enter Class ( 0 for Economy, 1 for Business, 2 for FirstClass):");
             var inputClass = Console.ReadLine().Trim();
 
             if (!int.TryParse(inputClass, out int classNumber))
@@ -84,6 +84,7 @@ namespace ATP.BusinessLogicLayer.Services
 
             DisplayFilteredFlights(filteredFlights);
         }
+
 
         private void DisplayFilteredFlights(List<FlightDomainModel> flights)
         {

@@ -50,7 +50,7 @@ public class PassengerService : IPassengerService
         }
     }
 
-    private void BookFlight()
+    public void BookFlight()
     {
         Console.WriteLine("Booking a flight...");
 
@@ -78,7 +78,7 @@ public class PassengerService : IPassengerService
     }
 
 
-    private void ViewPersonalBookings()
+   public void ViewPersonalBookings()
     {
         Console.Write("Enter booking ID to view details: ");
         if (!int.TryParse(Console.ReadLine(), out int bookingId))

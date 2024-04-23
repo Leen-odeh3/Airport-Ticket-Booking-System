@@ -17,14 +17,28 @@ public class BookingService
         _logger = logger;
         _csvFilePath = csvFilePath;
     }
-
     public void BookFlight(FlightDomainModel flight)
     {
+        if (flight is null)
+        {
+            throw new ArgumentNullException(nameof(flight), "Flight cannot be null");
+        }
+
+        if (flight.Id <= 0)
+        {
+            throw new ArgumentException("Invalid flight ID", nameof(flight.Id));
+        }
+
+        if (string.IsNullOrWhiteSpace(flight.DepartureCountry) || string.IsNullOrWhiteSpace(flight.DestinationCountry))
+        {
+            throw new ArgumentException("Departure and destination countries cannot be null or empty");
+        }
         var booking = new BookingDomainModel(flight.Id, flight.Id, flight.Class, flight.DepartureDate, flight.DepartureCountry, flight.DestinationCountry);
         bookings.Add(booking);
         WriteBookingToCsv(booking);
         _logger.LogInformation($"Booking with ID {flight.Id} successfully created for the flight from {flight.DepartureCountry} to {flight.DestinationCountry} on {flight.DepartureDate}.");
     }
+
 
 
     private void WriteBookingToCsv(BookingDomainModel booking)

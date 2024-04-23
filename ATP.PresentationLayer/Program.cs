@@ -124,13 +124,38 @@ namespace ATP.PresentationLayer
                 switch (choice)
                 {
                     case "1":
-                        managerService.FilterByFlight();
+                        Console.WriteLine("Enter Departure Country: ");
+                        string departureCountry = Console.ReadLine();
+                        Console.WriteLine("Enter Destination Country: ");
+                        string destinationCountry = Console.ReadLine();
+                        managerService.FilterByFlight(departureCountry, destinationCountry);
                         break;
                     case "2":
-                        managerService.FilterByPrice();
+                        Console.WriteLine("Enter Minimum Price: ");
+                        if (!double.TryParse(Console.ReadLine(), out double minPrice))
+                        {
+                            Console.WriteLine("Invalid input for minimum price.");
+                            break;
+                        }
+
+                        Console.WriteLine("Enter Maximum Price: ");
+                        if (!double.TryParse(Console.ReadLine(), out double maxPrice))
+                        {
+                            Console.WriteLine("Invalid input for maximum price.");
+                            break;
+                        }
+
+                        managerService.FilterByPrice(minPrice, maxPrice); 
                         break;
+
                     case "3":
-                        managerService.FilterByClass();
+                        Console.WriteLine("Enter Class (0 for Economy, 1 for Business, 2 for FirstClass): ");
+                        if (!Enum.TryParse(Console.ReadLine(), out FlightClass flightClass))
+                        {
+                            Console.WriteLine("Invalid class input.");
+                            break;
+                        }
+                        managerService.FilterByClass(flightClass);
                         break;
                     case "4":
                         Console.WriteLine("Exiting Manager Menu.");
@@ -139,6 +164,7 @@ namespace ATP.PresentationLayer
                         Console.WriteLine("Invalid choice. Please try again.");
                         break;
                 }
+
             }
         }
     }

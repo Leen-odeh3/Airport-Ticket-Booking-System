@@ -16,8 +16,6 @@ public class ManagerServiceTest
         _managerService = new ManagerService(flights);
     }
 
-   
-
     [Fact]
     public void FilterByFlight_ValidInput_ReturnsFilteredFlights()
     {
@@ -41,7 +39,6 @@ public class ManagerServiceTest
         Assert.Single(filteredFlightsCaseInsensitive);
         Assert.Equal(1, filteredFlightsCaseInsensitive[0].Id);
     }
-
 
     [Fact]
     public void FilterByPrice_ValidInput_ReturnsFilteredFlights()
@@ -74,5 +71,11 @@ public class ManagerServiceTest
         // Assert
         Assert.Single(filteredFlights);
         Assert.Equal(1, filteredFlights[0].Id);
+
+        // Additional test case
+        // Test case: Filter by different class
+        var filteredFlightsBusinessClass = _managerService.FilterByClass(FlightClass.Business);
+        Assert.Single(filteredFlightsBusinessClass);
+        Assert.Equal(2, filteredFlightsBusinessClass[0].Id);
     }
 }

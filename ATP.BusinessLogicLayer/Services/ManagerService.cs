@@ -22,27 +22,12 @@ public class ManagerService
     }
 
 
-    public void FilterByPrice()
+    public List<FlightDomainModel> FilterByPrice(double minPrice, double maxPrice)
     {
-        Console.WriteLine("Filter by Price:");
-        Console.Write("Enter Minimum Price: ");
-        if (!double.TryParse(Console.ReadLine(), out double minPrice))
-        {
-            Console.WriteLine("Invalid input for minimum price.");
-            return;
-        }
-
-        Console.Write("Enter Maximum Price: ");
-        if (!double.TryParse(Console.ReadLine(), out double maxPrice))
-        {
-            Console.WriteLine("Invalid input for maximum price.");
-            return;
-        }
-
         if (minPrice > maxPrice)
         {
             Console.WriteLine("Minimum price cannot be greater than maximum price.");
-            return;
+            return new List<FlightDomainModel>();
         }
 
         var filteredFlights = availableFlights.FindAll(flight =>
@@ -50,7 +35,9 @@ public class ManagerService
         );
 
         DisplayFilteredFlights(filteredFlights);
+        return filteredFlights;
     }
+
 
     public void FilterByClass()
     {

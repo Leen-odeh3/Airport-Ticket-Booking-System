@@ -21,4 +21,6 @@ public class FlightDomainModel
     public string DepartureAirport { get; set; }
     public string ArrivalAirport { get; set; }
     public FlightClass Class { get; set; }
+
+   
 }

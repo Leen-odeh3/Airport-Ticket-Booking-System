@@ -3,9 +3,7 @@ using ATP.BusinessLogicLayer.Services;
 using ATP.DataAccessLayer.Repository;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.IO;
+
 
 namespace ATP.PresentationLayer
 {

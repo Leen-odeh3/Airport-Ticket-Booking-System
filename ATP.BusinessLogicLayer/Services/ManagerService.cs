@@ -10,7 +10,6 @@ public class ManagerService
     {
         availableFlights = flights;
     }
-
     public List<FlightDomainModel> FilterByFlight(string departureCountry, string destinationCountry)
     {
         var filteredFlights = availableFlights.FindAll(flight =>
@@ -20,7 +19,6 @@ public class ManagerService
 
         return filteredFlights;
     }
-
 
     public List<FlightDomainModel> FilterByPrice(double minPrice, double maxPrice)
     {
@@ -37,33 +35,14 @@ public class ManagerService
         DisplayFilteredFlights(filteredFlights);
         return filteredFlights;
     }
-
-
-    public void FilterByClass()
+    public List<FlightDomainModel> FilterByClass(FlightClass flightClass)
     {
-        Console.WriteLine("Filter by Class:");
-        Console.WriteLine("Enter Class ( 0 for Economy, 1 for Business, 2 for FirstClass):");
-        var inputClass = Console.ReadLine().Trim();
-
-        if (!int.TryParse(inputClass, out int classNumber))
-        {
-            Console.WriteLine("Invalid class input.");
-            return;
-        }
-
-        if (!Enum.IsDefined(typeof(FlightClass), classNumber))
-        {
-            Console.WriteLine("Invalid class input.");
-            return;
-        }
-
-        var flightClass = (FlightClass)classNumber;
-
         var filteredFlights = availableFlights.FindAll(flight =>
             flight.Class == flightClass
         );
 
         DisplayFilteredFlights(filteredFlights);
+        return filteredFlights;
     }
 
 

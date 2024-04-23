@@ -16,6 +16,8 @@ public class ManagerServiceTest
         _managerService = new ManagerService(flights);
     }
 
+   
+
     [Fact]
     public void FilterByFlight_ValidInput_ReturnsFilteredFlights()
     {
@@ -25,7 +27,21 @@ public class ManagerServiceTest
         // Assert
         Assert.Single(filteredFlights);
         Assert.Equal(1, filteredFlights[0].Id);
+
+        // Test case: Departure country not found
+        var filteredFlightsDepartureNotFound = _managerService.FilterByFlight("InvalidCountry", "CountryB");
+        Assert.Empty(filteredFlightsDepartureNotFound);
+
+        // Test case: Destination country not found
+        var filteredFlightsDestinationNotFound = _managerService.FilterByFlight("CountryA", "InvalidCountry");
+        Assert.Empty(filteredFlightsDestinationNotFound);
+
+        // Test case: Case-insensitive matching
+        var filteredFlightsCaseInsensitive = _managerService.FilterByFlight("countrya", "countryb");
+        Assert.Single(filteredFlightsCaseInsensitive);
+        Assert.Equal(1, filteredFlightsCaseInsensitive[0].Id);
     }
+
 
     [Fact]
     public void FilterByPrice_ValidInput_ReturnsFilteredFlights()

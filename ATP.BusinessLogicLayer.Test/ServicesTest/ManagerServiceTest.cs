@@ -44,7 +44,7 @@ public class ManagerServiceTest
     }
 
     [Fact]
-    public void FilterByClass_ShouldReturnCorrectResults_WhenGivenInput()
+    public void FilterByClass_ReturnsCorrectResults_WhenGivenValidInput()
     {
         var managerService = new ManagerService(Flights);
 
@@ -53,10 +53,51 @@ public class ManagerServiceTest
 
         var expectedOutput = $"Filter by Class:{Environment.NewLine}" +
                              $"Enter Class ( 0 for Economy, 1 for Business, 2 for FirstClass):{Environment.NewLine}Filtered Flights:{Environment.NewLine}" +
-                             $"Flight ID: 1, Departure Country: USA, Destination Country: UK, Date: {DateTime.Now}, Class: Economy, Price: 100{Environment.NewLine}" +
-                             $"Flight ID: 4, Departure Country: Spain, Destination Country: Greece, Date: {DateTime.Now}, Class: Economy, Price: 200{Environment.NewLine}";
+                             $"Flight ID: 1, Departure Country: USA, Destination Country: UK, Date: 3/10/2024 12:00:00 AM, Class: Economy, Price: 100{Environment.NewLine}" +
+                             $"Flight ID: 4, Departure Country: Spain, Destination Country: Greece, Date: 3/25/2024 12:00:00 AM, Class: Economy, Price: 200{Environment.NewLine}";
 
         Assert.Equal(expectedOutput, _consoleOutput.ToString());
     }
 
+    [Fact]
+    public void FilterByFlight_ShouldReturnEmpty_WhenDestinationCountryNotFound()
+    {
+        var managerService = new ManagerService(Flights);
+
+        SetupConsoleInput("USA\nNonExistentCountry\n");
+        managerService.FilterByFlight();
+
+        var expectedOutput = $"Filter by Flight:{Environment.NewLine}" +
+                             $"Enter Departure Country: Enter Destination Country: No flights found matching the criteria.{Environment.NewLine}";
+
+        Assert.Equal(expectedOutput, _consoleOutput.ToString());
+    }
+
+    [Fact]
+    public void FilterByFlight_ShouldReturnEmpty_WhenDepartureCountryNotFound()
+    {
+        var managerService = new ManagerService(Flights);
+        SetupConsoleInput("NonExistentCountry\nUK\n");
+        managerService.FilterByFlight();
+
+        var expectedOutput = $"Filter by Flight:{Environment.NewLine}" +
+                             $"Enter Departure Country: Enter Destination Country: No flights found matching the criteria.{Environment.NewLine}";
+
+        Assert.Equal(expectedOutput, _consoleOutput.ToString());
+    }
+
+    [Fact]
+    public void FilterByFlight_ShouldReturnFlight_WhenDepartureAndDestinationMatch()
+    {
+        var managerService = new ManagerService(Flights);
+
+        SetupConsoleInput("Germany\nItaly\n");
+        managerService.FilterByFlight();
+
+        var expectedOutput = $"Filter by Flight:{Environment.NewLine}" +
+                             $"Enter Departure Country: Enter Destination Country: Filtered Flights:{Environment.NewLine}" +
+                             $"Flight ID: 3, Departure Country: Germany, Destination Country: Italy, Date: 3/20/2024 12:00:00 AM, Class: First, Price: 300{Environment.NewLine}";
+
+        Assert.Equal(expectedOutput, _consoleOutput.ToString());
+    }
 }

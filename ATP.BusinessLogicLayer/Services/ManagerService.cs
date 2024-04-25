@@ -84,8 +84,6 @@ namespace ATP.BusinessLogicLayer.Services
 
             DisplayFilteredFlights(filteredFlights);
         }
-
-
         private void DisplayFilteredFlights(List<FlightDomainModel> flights)
         {
             if (flights.Count > 0)

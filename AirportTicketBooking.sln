@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ATP.BusinessLogicLayer", "A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ATP.BusinessLogicLayer.Test", "ATP.BusinessLogicLayer.Test\ATP.BusinessLogicLayer.Test.csproj", "{2BCDF394-F71C-4B03-852D-F7878844BDE2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ATP.DataAccessLayer.Test", "ATP.DataAccessLayer.Test\ATP.DataAccessLayer.Test.csproj", "{1678E1A6-1F37-4E7A-A16F-AC6C17819A0C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{2BCDF394-F71C-4B03-852D-F7878844BDE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BCDF394-F71C-4B03-852D-F7878844BDE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BCDF394-F71C-4B03-852D-F7878844BDE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1678E1A6-1F37-4E7A-A16F-AC6C17819A0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1678E1A6-1F37-4E7A-A16F-AC6C17819A0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1678E1A6-1F37-4E7A-A16F-AC6C17819A0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1678E1A6-1F37-4E7A-A16F-AC6C17819A0C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

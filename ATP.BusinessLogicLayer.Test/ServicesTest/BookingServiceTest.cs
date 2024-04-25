@@ -15,8 +15,7 @@ public class BookingServiceTest
     {
         _fixture = new Fixture();
         _loggerMock = new Mock<ILogger<BookingService>>();
-        _csvFilePath = "test.csv"; 
-
+        _csvFilePath = "test.csv";
         _service = new BookingService(_csvFilePath, _loggerMock.Object);
     }
 
@@ -29,6 +28,7 @@ public class BookingServiceTest
 
         Assert.Single(_service.GetBookings());
     }
+
     [Fact]
     public void BookFlight_Logs_Information()
     {
@@ -105,6 +105,7 @@ public class BookingServiceTest
     [Theory]
     [InlineData(FlightClass.Economy)]
     [InlineData(FlightClass.Business)]
+    [InlineData(FlightClass.First)]
     public void FilterBookings_ReturnsFiltered_BookingsList(FlightClass flightClass)
     {
         // Arrange

@@ -7,7 +7,7 @@ using CsvHelper;
 using Microsoft.Extensions.Logging;
 
 namespace ATP.DataAccessLayer.Repository;
-public class FlightRepository : IGenericRepo<FlightDomainModel> // use loggers
+public class FlightRepository : IGenericRepo<FlightDomainModel> 
 {
     private List<FlightDomainModel> _flights;
     private readonly string _csvFilePath;

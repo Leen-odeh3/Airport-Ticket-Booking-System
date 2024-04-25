@@ -2,9 +2,7 @@
 using CsvHelper;
 using System.Globalization;
 
-
 namespace ATP.DataAccessLayer.Repository;
-
 public class BookingRepository
 {
     private readonly string _csvFilePath;

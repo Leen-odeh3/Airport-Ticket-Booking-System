@@ -10,7 +10,7 @@ public class ManagerService
 
     public static List<FlightDomainModel> LoadFlightsFromJson(string filePath)
     {
-        using (var reader = new StreamReader(filePath))
+        using var reader = new StreamReader(filePath);
         {
             string json = reader.ReadToEnd();
             return JsonConvert.DeserializeObject<List<FlightDomainModel>>(json);

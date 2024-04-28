@@ -1,10 +1,12 @@
 ﻿using ATP.BusinessLogicLayer.Models;
 using ATP.BusinessLogicLayer.Services;
 using ATP.DataAccessLayer.Repository;
+using CsvHelper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 
 namespace ATP.PresentationLayer
@@ -37,8 +39,21 @@ namespace ATP.PresentationLayer
 
             Console.WriteLine("Welcome !");
             var csvFilePath = configuration["CsvFilePath"];
-            FlightRepository flightRepository = new(csvFilePath);
-            flightRepository.WriteListToCsv(flights);
+            try
+            {
+                FlightRepository flightRepository = new(csvFilePath);
+
+                using (var writer = new StreamWriter(csvFilePath))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(flights);
+                    Console.WriteLine("Flights successfully written to CSV file.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error writing flights to CSV: {ex.Message}");
+            }
 
             int mainChoice;
             do

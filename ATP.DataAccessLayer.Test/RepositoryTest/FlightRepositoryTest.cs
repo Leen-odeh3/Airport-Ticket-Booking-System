@@ -1,82 +1,89 @@
-﻿using System.Globalization;
-using ATP.BusinessLogicLayer.Models;
+﻿using ATP.BusinessLogicLayer.Models;
 using ATP.DataAccessLayer.Mapper;
 using ATP.DataAccessLayer.Models;
-using CsvHelper;
+using ATP.DataAccessLayer.Repository;
 using Microsoft.Extensions.Logging;
+using Moq;
 
-namespace ATP.DataAccessLayer.Repository;
+namespace ATP.DataAccessLayerTest.RepositoryTest;
 
-public class FlightRepository
+public class FlightRepositoryTest
 {
-    private List<FlightDomainModel> _flights;
-    private readonly string _csvFilePath;
-    private FlightMapper _mapper;
-    private readonly ILogger<FlightRepository> _logger;
+    private readonly Mock<FlightMapper> _mapperMock;
+    private readonly Mock<ILogger<FlightRepository>> _loggerMock;
+    private readonly List<FlightDomainModel> _flights;
 
-    public FlightRepository(string csvFilePath, FlightMapper mapper, ILogger<FlightRepository> logger)
+    public FlightRepositoryTest()
     {
-        _csvFilePath = csvFilePath;
-        _mapper = mapper;
-        _flights = LoadFlightsFromCsv(csvFilePath);
-        _logger = logger;
-    }
+        _mapperMock = new Mock<FlightMapper>();
+        _loggerMock = new Mock<ILogger<FlightRepository>>();
 
-    private List<FlightDomainModel> LoadFlightsFromCsv(string csvFilePath)
-    {
-        try
+        _flights = new List<FlightDomainModel>
         {
-            using (var reader = new StreamReader(csvFilePath))
-            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-            {
-                var flights = csv.GetRecords<Flight>().ToList();
-                var result = flights.Select(f => _mapper.MapToDomain(f)).ToList();
-                return result;
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to load flights from CSV file.");
-            return new List<FlightDomainModel>();
-        }
+            new FlightDomainModel(
+                id: 1,
+                price: 100,
+                departureCountry: "USA",
+                destinationCountry: "UK",
+                departureDate: DateTime.Now,
+                departureAirport: "JFK",
+                arrivalAirport: "LHR",
+                flightClass: FlightClass.Economy
+            ),
+            new FlightDomainModel(
+                id: 2,
+                price: 200,
+                departureCountry: "UK",
+                destinationCountry: "France",
+                departureDate: DateTime.Now,
+                departureAirport: "LHR",
+                arrivalAirport: "CDG",
+                flightClass: FlightClass.Business
+            )
+        };
     }
 
-    public FlightDomainModel GetById(int id)
+    [Fact]
+    public void GetById_ReturnsFlightWithMatchingId()
     {
-        return _flights.SingleOrDefault(f => f.Id == id);
+        int idToFind = 1;
+        _mapperMock.Setup(m => m.MapToDomain(It.IsAny<Flight>()))
+            .Returns((Flight f) => _flights.Find(x => x.Id == f.Id));
+
+        var repository = new FlightRepository("dummy.csv", _mapperMock.Object, _loggerMock.Object);
+        var retrievedFlight = repository.GetById(idToFind);
+
+        Assert.NotNull(retrievedFlight);
+        Assert.Equal(idToFind, retrievedFlight.Id);
     }
 
-    public void Add(FlightDomainModel entity)
+    [Fact]
+    public void GetAll_ReturnsAllFlights()
     {
-        entity.Id = _flights.Count > 0 ? _flights.Max(f => f.Id) + 1 : 1;
-        _flights.Add(entity);
-        SaveChangesToCsv();
+        _mapperMock.Setup(m => m.MapToDomain(It.IsAny<Flight>()))
+            .Returns((Flight f) => _flights.Find(x => x.Id == f.Id));
+
+        var repository = new FlightRepository("dummy.csv", _mapperMock.Object, _loggerMock.Object);
+        var allFlights = repository.GetAll();
+
+        Assert.Equal(_flights.Count, allFlights.Count);
+        Assert.Equal(_flights, allFlights);
     }
 
-    public void Delete(FlightDomainModel entity)
+    [Fact]
+    public void Update_UpdatesExistingFlight()
     {
-        _flights.Remove(entity);
-        SaveChangesToCsv();
-    }
+        var flightToUpdate = _flights[0];
+        flightToUpdate.Price = 150;
 
-    public ICollection<FlightDomainModel> GetAll()
-    {
-        return _flights;
-    }
+        _mapperMock.Setup(m => m.MapToDomain(It.IsAny<Flight>()))
+            .Returns((Flight f) => _flights.Find(x => x.Id == f.Id));
 
-    public void Update(FlightDomainModel entity)
-    {
-        var index = _flights.FindIndex(f => f.Id == entity.Id);
-        if (index == -1) return;
+        var repository = new FlightRepository("dummy.csv", _mapperMock.Object, _loggerMock.Object);
+        repository.Update(flightToUpdate);
 
-        _flights[index] = entity;
-        SaveChangesToCsv();
-    }
-
-    private void SaveChangesToCsv()
-    {
-        using var writer = new StreamWriter(_csvFilePath);
-        using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-        csv.WriteRecords(_flights);
+        var updatedFlight = repository.GetById(flightToUpdate.Id);
+        Assert.NotNull(updatedFlight);
+        Assert.Equal(150, updatedFlight.Price);
     }
 }

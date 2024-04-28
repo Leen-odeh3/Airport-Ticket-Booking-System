@@ -1,89 +1,116 @@
-﻿using ATP.BusinessLogicLayer.Models;
-using ATP.DataAccessLayer.Mapper;
-using ATP.DataAccessLayer.Models;
+﻿using ATP.DataAccessLayer.Models;
 using ATP.DataAccessLayer.Repository;
-using Microsoft.Extensions.Logging;
-using Moq;
+using ATP.DataAccessLayer.Mapper;
+using AutoFixture;
+using AutoFixture.AutoMoq;
+using CsvHelper;
+using Microsoft.Extensions.Logging.Abstractions;
+using ATP.BusinessLogicLayer.Models;
+using System.Globalization;
 
-namespace ATP.DataAccessLayerTest.RepositoryTest;
+namespace ATP.DataAccessLayer.Test;
 
 public class FlightRepositoryTest
 {
-    private readonly Mock<FlightMapper> _mapperMock;
-    private readonly Mock<ILogger<FlightRepository>> _loggerMock;
-    private readonly List<FlightDomainModel> _flights;
+    private readonly Fixture _fixture;
+    private readonly string _csvFilePath;
 
     public FlightRepositoryTest()
     {
-        _mapperMock = new Mock<FlightMapper>();
-        _loggerMock = new Mock<ILogger<FlightRepository>>();
+        _fixture = new Fixture();
+        _fixture.Customize(new AutoMoqCustomization());
+        _csvFilePath = "test_flights.csv";
+    }
 
-        _flights = new List<FlightDomainModel>
+    [Fact]
+    public void GetById_ExistingId_ReturnsFlight()
+    {
+        // Arrange
+        var repository = CreateFlightRepositoryWithTestData();
+        var expectedFlight = repository.GetAll().First();
+
+        // Act
+        var actualFlight = repository.GetById(expectedFlight.Id);
+
+        // Assert
+        Assert.Equal(expectedFlight, actualFlight);
+    }
+
+    [Fact]
+    public void GetById_NonExistingId_ReturnsNull()
+    {
+        // Arrange
+        var repository = CreateFlightRepositoryWithTestData();
+        var nonExistingId = repository.GetAll().Max(f => f.Id) + 1;
+
+        // Act
+        var flight = repository.GetById(nonExistingId);
+
+        // Assert
+        Assert.Null(flight);
+    }
+
+    [Fact]
+    public void Add_NewFlight_FlightAdded()
+    {
+        // Arrange
+        var repository = CreateFlightRepositoryWithTestData();
+        var newFlight = _fixture.Create<FlightDomainModel>();
+
+        // Act
+        repository.Add(newFlight);
+        var addedFlight = repository.GetById(newFlight.Id);
+
+        // Assert
+        Assert.NotNull(addedFlight);
+        Assert.Equal(newFlight, addedFlight);
+    }
+
+    [Fact]
+    public void Delete_ExistingFlight_FlightRemoved()
+    {
+        // Arrange
+        var repository = CreateFlightRepositoryWithTestData();
+        var flightToDelete = repository.GetAll().First();
+
+        // Act
+        repository.Delete(flightToDelete);
+        var deletedFlight = repository.GetById(flightToDelete.Id);
+
+        // Assert
+        Assert.Null(deletedFlight);
+    }
+
+    [Fact]
+    public void Update_ExistingFlight_FlightUpdated()
+    {
+        // Arrange
+        var repository = CreateFlightRepositoryWithTestData();
+        var flightToUpdate = repository.GetAll().First();
+        var updatedFlight = _fixture.Create<FlightDomainModel>();
+        updatedFlight.Id = flightToUpdate.Id;
+
+        // Act
+        repository.Update(updatedFlight);
+        var retrievedFlight = repository.GetById(updatedFlight.Id);
+
+        // Assert
+        Assert.Equal(updatedFlight, retrievedFlight);
+    }
+
+    private FlightRepository CreateFlightRepositoryWithTestData()
+    {
+        var flights = _fixture.CreateMany<FlightDomainModel>(5).ToList();
+        var csvFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _csvFilePath);
+
+        using (var writer = new StreamWriter(csvFilePath))
+        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
         {
-            new FlightDomainModel(
-                id: 1,
-                price: 100,
-                departureCountry: "USA",
-                destinationCountry: "UK",
-                departureDate: DateTime.Now,
-                departureAirport: "JFK",
-                arrivalAirport: "LHR",
-                flightClass: FlightClass.Economy
-            ),
-            new FlightDomainModel(
-                id: 2,
-                price: 200,
-                departureCountry: "UK",
-                destinationCountry: "France",
-                departureDate: DateTime.Now,
-                departureAirport: "LHR",
-                arrivalAirport: "CDG",
-                flightClass: FlightClass.Business
-            )
-        };
-    }
+            csv.WriteRecords(flights.Select(f => new Flight { Id = f.Id }));
+        }
 
-    [Fact]
-    public void GetById_ReturnsFlightWithMatchingId()
-    {
-        int idToFind = 1;
-        _mapperMock.Setup(m => m.MapToDomain(It.IsAny<Flight>()))
-            .Returns((Flight f) => _flights.Find(x => x.Id == f.Id));
-
-        var repository = new FlightRepository("dummy.csv", _mapperMock.Object, _loggerMock.Object);
-        var retrievedFlight = repository.GetById(idToFind);
-
-        Assert.NotNull(retrievedFlight);
-        Assert.Equal(idToFind, retrievedFlight.Id);
-    }
-
-    [Fact]
-    public void GetAll_ReturnsAllFlights()
-    {
-        _mapperMock.Setup(m => m.MapToDomain(It.IsAny<Flight>()))
-            .Returns((Flight f) => _flights.Find(x => x.Id == f.Id));
-
-        var repository = new FlightRepository("dummy.csv", _mapperMock.Object, _loggerMock.Object);
-        var allFlights = repository.GetAll();
-
-        Assert.Equal(_flights.Count, allFlights.Count);
-        Assert.Equal(_flights, allFlights);
-    }
-
-    [Fact]
-    public void Update_UpdatesExistingFlight()
-    {
-        var flightToUpdate = _flights[0];
-        flightToUpdate.Price = 150;
-
-        _mapperMock.Setup(m => m.MapToDomain(It.IsAny<Flight>()))
-            .Returns((Flight f) => _flights.Find(x => x.Id == f.Id));
-
-        var repository = new FlightRepository("dummy.csv", _mapperMock.Object, _loggerMock.Object);
-        repository.Update(flightToUpdate);
-
-        var updatedFlight = repository.GetById(flightToUpdate.Id);
-        Assert.NotNull(updatedFlight);
-        Assert.Equal(150, updatedFlight.Price);
+        var mapper = new FlightMapper();
+        var logger = NullLogger<FlightRepository>.Instance;
+        return new FlightRepository(csvFilePath, mapper, logger);
     }
 }

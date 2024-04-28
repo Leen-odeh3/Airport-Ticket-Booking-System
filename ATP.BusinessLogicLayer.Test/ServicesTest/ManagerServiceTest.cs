@@ -3,16 +3,9 @@ using ATP.BusinessLogicLayer.Services;
 
 namespace ATP.BusinessLogicLayer.Test.ServicesTest;
 public class ManagerServiceTest
-{  
-    private static readonly List<FlightDomainModel> Flights = new List<FlightDomainModel>
-    {
-        new FlightDomainModel(1, 100.0, "USA", "UK", new DateTime(2024, 03, 10), "JFK", "LHR", FlightClass.Economy),
-        new FlightDomainModel(2, 500.0, "UK", "France", new DateTime(2024, 03, 15), "LHR", "CDG", FlightClass.Business),
-        new FlightDomainModel(3, 300.0, "Germany", "Italy", new DateTime(2024, 03, 20), "TXL", "FCO", FlightClass.First),
-        new FlightDomainModel(4, 200.0, "Spain", "Greece", new DateTime(2024, 03, 25), "MAD", "ATH", FlightClass.Economy),
-        new FlightDomainModel(5, 400.0, "Australia", "Japan", new DateTime(2024, 03, 30), "SYD", "HND", FlightClass.Business),
-        new FlightDomainModel(6, 600.0, "China", "Singapore", new DateTime(2024, 04, 05), "PEK", "SIN", FlightClass.First)
-    };
+{
+    static string filePath = "C:\\Users\\hp\\Desktop\\C#\\ATP.BusinessLogicLayer.Test\\ServicesTest\\TestFlights.json";
+    List<FlightDomainModel> flights = ManagerService.LoadFlightsFromJson(filePath);
 
     private StringWriter _consoleOutput;
     private StringReader _consoleInput;
@@ -22,17 +15,17 @@ public class ManagerServiceTest
         _consoleOutput = new StringWriter();
         Console.SetOut(_consoleOutput);
     }
+
     private void SetupConsoleInput(string input)
     {
         _consoleInput = new StringReader(input);
         Console.SetIn(_consoleInput);
     }
 
-
     [Fact]
     public void FilterByFlight_ShouldReturnCorrectResults_WhenGivenInput()
     {
-        var managerService = new ManagerService(Flights);
+        var managerService = new ManagerService(flights);
 
         SetupConsoleInput("USA\nUK\n");
         managerService.FilterByFlight();
@@ -45,17 +38,16 @@ public class ManagerServiceTest
         Assert.Equal(expectedOutput, actualOutput);
     }
 
-
     [Fact]
     public void FilterByFlight_ShouldReturnEmpty_WhenDestinationCountryNotFound()
     {
-        var managerService = new ManagerService(Flights);
+        var managerService = new ManagerService(flights);
 
         SetupConsoleInput("USA\nNonExistentCountry\n");
         managerService.FilterByFlight();
 
         var expectedOutput = $"Filter by Flight:{Environment.NewLine}" +
-                             $"Enter Departure Country: Enter Destination Country: No flights found matching the criteria.{Environment.NewLine}";
+                            $"Enter Departure Country: Enter Destination Country: No flights found matching the criteria.{Environment.NewLine}";
 
         Assert.Equal(expectedOutput, _consoleOutput.ToString());
     }
@@ -63,12 +55,12 @@ public class ManagerServiceTest
     [Fact]
     public void FilterByFlight_ShouldReturnEmpty_WhenDepartureCountryNotFound()
     {
-        var managerService = new ManagerService(Flights);
+        var managerService = new ManagerService(flights);
         SetupConsoleInput("NonExistentCountry\nUK\n");
         managerService.FilterByFlight();
 
         var expectedOutput = $"Filter by Flight:{Environment.NewLine}" +
-                             $"Enter Departure Country: Enter Destination Country: No flights found matching the criteria.{Environment.NewLine}";
+                            $"Enter Departure Country: Enter Destination Country: No flights found matching the criteria.{Environment.NewLine}";
 
         Assert.Equal(expectedOutput, _consoleOutput.ToString());
     }
@@ -76,14 +68,14 @@ public class ManagerServiceTest
     [Fact]
     public void FilterByFlight_ShouldReturnFlight_WhenDepartureAndDestinationMatch()
     {
-        var managerService = new ManagerService(Flights);
+        var managerService = new ManagerService(flights);
 
         SetupConsoleInput("Germany\nItaly\n");
         managerService.FilterByFlight();
 
         var expectedOutput = $"Filter by Flight:{Environment.NewLine}" +
-                             $"Enter Departure Country: Enter Destination Country: Filtered Flights:{Environment.NewLine}" +
-                             $"Flight ID: 3, Departure Country: Germany, Destination Country: Italy, Date: 3/20/2024 12:00:00 AM, Class: First, Price: 300{Environment.NewLine}";
+                            $"Enter Departure Country: Enter Destination Country: Filtered Flights:{Environment.NewLine}" +
+                            $"Flight ID: 3, Departure Country: Germany, Destination Country: Italy, Date: 3/20/2024 12:00:00 AM, Class: First, Price: 300{Environment.NewLine}";
 
         Assert.Equal(expectedOutput, _consoleOutput.ToString());
     }

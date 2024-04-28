@@ -1,86 +1,82 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Globalization;
 using ATP.BusinessLogicLayer.Models;
-using ATP.DataAccessLayer.Repository;
-using Moq;
-using Xunit;
+using ATP.DataAccessLayer.Mapper;
+using ATP.DataAccessLayer.Models;
+using CsvHelper;
+using Microsoft.Extensions.Logging;
 
-namespace ATP.DataAccessLayerTest.RepositoryTest
+namespace ATP.DataAccessLayer.Repository;
+
+public class FlightRepository
 {
-    public class FlightRepositoryTest
+    private List<FlightDomainModel> _flights;
+    private readonly string _csvFilePath;
+    private FlightMapper _mapper;
+    private readonly ILogger<FlightRepository> _logger;
+
+    public FlightRepository(string csvFilePath, FlightMapper mapper, ILogger<FlightRepository> logger)
     {
-        private readonly Mock<IFlightRepository> _repositoryMock = new Mock<IFlightRepository>();
-        private readonly List<FlightDomainModel> _flights;
+        _csvFilePath = csvFilePath;
+        _mapper = mapper;
+        _flights = LoadFlightsFromCsv(csvFilePath);
+        _logger = logger;
+    }
 
-        public FlightRepositoryTest()
+    private List<FlightDomainModel> LoadFlightsFromCsv(string csvFilePath)
+    {
+        try
         {
-            _flights = new List<FlightDomainModel>
+            using (var reader = new StreamReader(csvFilePath))
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
-                new FlightDomainModel(
-                    id: 1,
-                    price: 100,
-                    departureCountry: "USA",
-                    destinationCountry: "UK",
-                    departureDate: DateTime.Now,
-                    departureAirport: "JFK",
-                    arrivalAirport: "LHR",
-                    flightClass: FlightClass.Economy
-                ),
-                new FlightDomainModel(
-                    id: 2,
-                    price: 200,
-                    departureCountry: "UK",
-                    destinationCountry: "France",
-                    departureDate: DateTime.Now,
-                    departureAirport: "LHR",
-                    arrivalAirport: "CDG",
-                    flightClass: FlightClass.Business
-                )
-            };
+                var flights = csv.GetRecords<Flight>().ToList();
+                var result = flights.Select(f => _mapper.MapToDomain(f)).ToList();
+                return result;
+            }
         }
-
-        [Fact]
-        public void GetById_ReturnsFlightWithMatchingId()
+        catch (Exception ex)
         {
-            int idToFind = 1;
-            _repositoryMock.Setup(repo => repo.GetById(idToFind)).Returns(_flights[0]);
-
-            var retrievedFlight = _repositoryMock.Object.GetById(idToFind);
-
-            Assert.NotNull(retrievedFlight);
-            Assert.Equal(idToFind, retrievedFlight.Id);
-        }
-
-        [Fact]
-        public void GetAll_ReturnsAllFlights()
-        {
-            _repositoryMock.Setup(repo => repo.GetAll()).Returns(_flights);
-
-            var allFlights = _repositoryMock.Object.GetAll();
-
-            Assert.Equal(_flights.Count, allFlights.Count);
-            Assert.Equal(_flights, allFlights);
-        }
-
-        [Fact]
-        public void Update_UpdatesExistingFlight()
-        {
-            var flightToUpdate = _flights[0];
-            flightToUpdate.Price = 150; 
-
-            _repositoryMock.Object.Update(flightToUpdate);
-
-            var updatedFlight = _flights.Find(f => f.Id == flightToUpdate.Id);
-            Assert.NotNull(updatedFlight);
-            Assert.Equal(150, updatedFlight.Price);
+            _logger.LogError(ex, "Failed to load flights from CSV file.");
+            return new List<FlightDomainModel>();
         }
     }
 
-
-    public interface IFlightRepository
+    public FlightDomainModel GetById(int id)
     {
-        FlightDomainModel GetById(int id);
-        ICollection<FlightDomainModel> GetAll();
-        void Update(FlightDomainModel flight);
+        return _flights.SingleOrDefault(f => f.Id == id);
+    }
+
+    public void Add(FlightDomainModel entity)
+    {
+        entity.Id = _flights.Count > 0 ? _flights.Max(f => f.Id) + 1 : 1;
+        _flights.Add(entity);
+        SaveChangesToCsv();
+    }
+
+    public void Delete(FlightDomainModel entity)
+    {
+        _flights.Remove(entity);
+        SaveChangesToCsv();
+    }
+
+    public ICollection<FlightDomainModel> GetAll()
+    {
+        return _flights;
+    }
+
+    public void Update(FlightDomainModel entity)
+    {
+        var index = _flights.FindIndex(f => f.Id == entity.Id);
+        if (index == -1) return;
+
+        _flights[index] = entity;
+        SaveChangesToCsv();
+    }
+
+    private void SaveChangesToCsv()
+    {
+        using var writer = new StreamWriter(_csvFilePath);
+        using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+        csv.WriteRecords(_flights);
     }
 }

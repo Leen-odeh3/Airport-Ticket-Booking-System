@@ -1,10 +1,21 @@
 ﻿using ATP.BusinessLogicLayer.Models;
+using Newtonsoft.Json;
+
 
 namespace ATP.BusinessLogicLayer.Services;
 
 public class ManagerService
 {
     private readonly List<FlightDomainModel> availableFlights;
+
+    public static List<FlightDomainModel> LoadFlightsFromJson(string filePath)
+    {
+        using (var reader = new StreamReader(filePath))
+        {
+            string json = reader.ReadToEnd();
+            return JsonConvert.DeserializeObject<List<FlightDomainModel>>(json);
+        }
+    }
 
     public ManagerService(List<FlightDomainModel> flights)
     {

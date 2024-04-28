@@ -4,31 +4,35 @@ using CsvHelper;
 using Moq;
 using System.Globalization;
 
-
-namespace ATP.DataAccessLayerTest.RepositoryTest;
-public class BookingRepositoryTest
+namespace ATP.DataAccessLayerTest.RepositoryTest
 {
-    [Fact]
-    public void ReadBookings_FromCsv_Success()
+    public class BookingRepositoryTest
     {
-        // Arrange
-        var csvFilePath = "test.csv";
-        var csvData = "Id,FlightId,FlightClass,BookingDate,DepartureCountry,DestinationCountry\n1,1,Economy,2024-04-25T12:00:00Z,USA,UK\n";
-        File.WriteAllText(csvFilePath, csvData);
+        private static Mock<StreamReader> _streamReaderMock;
+        private static Mock<CsvReader> _csvReaderMock;
 
-        var streamReaderMock = new Mock<StreamReader>(csvFilePath);
-        var csvReaderMock = new Mock<CsvReader>(streamReaderMock.Object, CultureInfo.InvariantCulture);
+        [Fact]
+        public void ReadBookings_FromCsv_Success()
+        {
+            // Arrange
+            var csvFilePath = "test.csv";
+            var csvData = "Id,FlightId,FlightClass,BookingDate,DepartureCountry,DestinationCountry\n1,1,Economy,2024-04-25T12:00:00Z,USA,UK\n";
+            File.WriteAllText(csvFilePath, csvData);
 
-        csvReaderMock.Setup(csvReader => csvReader.GetRecords<BookingDomainModel>())
-                     .Returns(new List<BookingDomainModel>());
+            _streamReaderMock = new Mock<StreamReader>(csvFilePath);
+            _csvReaderMock = new Mock<CsvReader>(_streamReaderMock.Object, CultureInfo.InvariantCulture);
 
-        var bookingRepository = new BookingRepository(csvFilePath);
+            _csvReaderMock.Setup(csvReader => csvReader.GetRecords<BookingDomainModel>())
+                         .Returns(new List<BookingDomainModel>());
 
-        // Act
-        var result = bookingRepository.ReadBookingsFromCsv();
+            var bookingRepository = new BookingRepository(csvFilePath);
 
-        // Assert
-        Assert.NotNull(result);
-        Assert.Empty(result);
+            // Act
+            var result = bookingRepository.ReadBookingsFromCsv();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
+        }
     }
 }

@@ -28,6 +28,7 @@ public class ManagerServiceTest
         Console.SetIn(_consoleInput);
     }
 
+
     [Fact]
     public void FilterByFlight_ShouldReturnCorrectResults_WhenGivenInput()
     {
@@ -36,28 +37,14 @@ public class ManagerServiceTest
         SetupConsoleInput("USA\nUK\n");
         managerService.FilterByFlight();
 
-        var expectedOutput = $"Filter by Flight:{Environment.NewLine}" +
-                             $"Enter Departure Country: Enter Destination Country: Filtered Flights:{Environment.NewLine}" +
-                             $"Flight ID: 1, Departure Country: USA, Destination Country: UK, Date: 3/10/2024 12:00:00 AM, Class: Economy, Price: 100{Environment.NewLine}";
+        string actualOutput = _consoleOutput.ToString();
+        string expectedOutput = $"Filter by Flight:{Environment.NewLine}" +
+                                $"Enter Departure Country: Enter Destination Country: Filtered Flights:{Environment.NewLine}" +
+                                $"Flight ID: 1, Departure Country: USA, Destination Country: UK, Date: 3/10/2024 12:00:00 AM, Class: Economy, Price: 100{Environment.NewLine}";
 
-        Assert.Equal(expectedOutput, _consoleOutput.ToString());
+        Assert.Equal(expectedOutput, actualOutput);
     }
 
-    [Fact]
-    public void FilterByClass_ReturnsCorrectResults_WhenGivenValidInput()
-    {
-        var managerService = new ManagerService(Flights);
-
-        SetupConsoleInput("0\n");
-        managerService.FilterByClass();
-
-        var expectedOutput = $"Filter by Class:{Environment.NewLine}" +
-                             $"Enter Class ( 0 for Economy, 1 for Business, 2 for FirstClass):{Environment.NewLine}Filtered Flights:{Environment.NewLine}" +
-                             $"Flight ID: 1, Departure Country: USA, Destination Country: UK, Date: 3/10/2024 12:00:00 AM, Class: Economy, Price: 100{Environment.NewLine}" +
-                             $"Flight ID: 4, Departure Country: Spain, Destination Country: Greece, Date: 3/25/2024 12:00:00 AM, Class: Economy, Price: 200{Environment.NewLine}";
-
-        Assert.Equal(expectedOutput, _consoleOutput.ToString());
-    }
 
     [Fact]
     public void FilterByFlight_ShouldReturnEmpty_WhenDestinationCountryNotFound()

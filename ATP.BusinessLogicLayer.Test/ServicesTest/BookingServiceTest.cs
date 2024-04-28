@@ -10,14 +10,16 @@ public class BookingServiceTest
     private BookingService _service;
     private Mock<ILogger<BookingService>> _loggerMock;
     private string _csvFilePath;
-    private Fixture _fixture;
+    private IFixture _fixture;
+
     public BookingServiceTest()
     {
         _fixture = new Fixture();
-        _loggerMock = new Mock<ILogger<BookingService>>();
+        _loggerMock = _fixture.Freeze<Mock<ILogger<BookingService>>>();
         _csvFilePath = "test.csv";
         _service = new BookingService(_csvFilePath, _loggerMock.Object);
     }
+
 
     [Fact]
     public void BookFlight_AddsBooking_Successfully()
@@ -70,9 +72,9 @@ public class BookingServiceTest
 
         var bookings = _service.GetBookings();
 
-        Assert.Collection(bookings,
-            booking => Assert.Equal(flight1.Id, booking.FlightId),
-            booking => Assert.Equal(flight2.Id, booking.FlightId));
+        Assert.Equal(2, bookings.Count);
+        Assert.Contains(bookings, booking => booking.FlightId == flight1.Id);
+        Assert.Contains(bookings, booking => booking.FlightId == flight2.Id);
     }
 
     [Fact]

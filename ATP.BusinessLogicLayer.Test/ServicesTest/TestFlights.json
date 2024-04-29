@@ -1,0 +1,63 @@
+﻿[
+  {
+    "Id": 1,
+    "Price": 100.0,
+    "DepartureCountry": "USA",
+    "DestinationCountry": "UK",
+    "DepartureDate": "2024-03-10T00:00:00",
+    "DepartureAirport": "JFK",
+    "DestinationAirport": "LHR",
+    "Class": 0
+  },
+  {
+    "Id": 2,
+    "Price": 500.0,
+    "DepartureCountry": "UK",
+    "DestinationCountry": "France",
+    "DepartureDate": "2024-03-15T00:00:00",
+    "DepartureAirport": "LHR",
+    "DestinationAirport": "CDG",
+    "Class": 1
+  },
+  {
+    "Id": 3,
+    "Price": 300.0,
+    "DepartureCountry": "Germany",
+    "DestinationCountry": "Italy",
+    "DepartureDate": "2024-03-20T00:00:00",
+    "DepartureAirport": "TXL",
+    "DestinationAirport": "FCO",
+    "Class": 2
+  },
+  {
+    "Id": 4,
+    "Price": 200.0,
+    "DepartureCountry": "Spain",
+    "DestinationCountry": "Greece",
+    "DepartureDate": "2024-03-25T00:00:00",
+    "DepartureAirport": "MAD",
+    "DestinationAirport": "ATH",
+    "Class": 0
+  },
+  {
+    "Id": 5,
+    "Price": 400.0,
+    "DepartureCountry": "Australia",
+    "DestinationCountry": "Japan",
+    "DepartureDate": "2024-03-30T00:00:00",
+    "DepartureAirport": "SYD",
+    "DestinationAirport": "HND",
+    "Class": 1
+  },
+  {
+    "Id": 6,
+    "Price": 600.0,
+    "DepartureCountry": "China",
+    "DestinationCountry": "Singapore",
+    "DepartureDate": "2024-04-05T00:00:00",
+    "DepartureAirport": "PEK",
+    "DestinationAirport": "SIN",
+    "Class": 2
+  }
+]
+

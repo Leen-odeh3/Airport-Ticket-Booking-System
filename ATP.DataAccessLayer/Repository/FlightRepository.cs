@@ -1,38 +1,26 @@
 ﻿using System.Globalization;
 using ATP.BusinessLogicLayer.Models;
-using ATP.BusinessLogicLayer.IGenericRepo;
 using ATP.DataAccessLayer.Mapper;
 using ATP.DataAccessLayer.Models;
 using CsvHelper;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace ATP.DataAccessLayer.Repository;
-public class FlightRepository : IGenericRepo<FlightDomainModel> // use loggers
+
+public class FlightRepository
 {
-    private List<FlightDomainModel> _flights;
+    private readonly List<FlightDomainModel> _flights;
     private readonly string _csvFilePath;
-    private FlightMapper _mapper;
-    private string? csvFilePath;
-    private object mapper;
+    private readonly FlightMapper _mapper;
     private readonly ILogger<FlightRepository> _logger;
 
-    public FlightRepository(string csvFilePath, FlightMapper mapper, ILogger<FlightRepository> logger)
+    public FlightRepository(string csvFilePath, FlightMapper mapper = null, ILogger<FlightRepository> logger = null)
     {
         _csvFilePath = csvFilePath;
-        _mapper = mapper;
+        _mapper = mapper ?? new FlightMapper(); // Use a new FlightMapper if not provided
+        _logger = logger ?? NullLogger<FlightRepository>.Instance; // Use null logger if not provided
         _flights = LoadFlightsFromCsv(csvFilePath);
-        _logger = logger;
-    }
-
-    public FlightRepository(string? csvFilePath, object mapper)
-    {
-        this.csvFilePath = csvFilePath;
-        this.mapper = mapper;
-    }
-
-    public FlightRepository(string? csvFilePath)
-    {
-        this.csvFilePath = csvFilePath;
     }
 
     private List<FlightDomainModel> LoadFlightsFromCsv(string csvFilePath)
@@ -47,9 +35,14 @@ public class FlightRepository : IGenericRepo<FlightDomainModel> // use loggers
                 return result;
             }
         }
+        catch (FileNotFoundException ex)
+        {
+            _logger.LogError(ex, "CSV file not found: {FilePath}", csvFilePath);
+            return new List<FlightDomainModel>();
+        }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to load flights from CSV file.");
+            _logger.LogError(ex, "Failed to load flights from CSV file: {FilePath}", csvFilePath);
             return new List<FlightDomainModel>();
         }
     }
@@ -58,7 +51,6 @@ public class FlightRepository : IGenericRepo<FlightDomainModel> // use loggers
     {
         return _flights.SingleOrDefault(f => f.Id == id);
     }
-
 
     public void Add(FlightDomainModel entity)
     {
@@ -72,28 +64,6 @@ public class FlightRepository : IGenericRepo<FlightDomainModel> // use loggers
         _flights.Remove(entity);
         SaveChangesToCsv();
     }
-
-    public void WriteListToCsv(List<FlightDomainModel> list)
-    {
-        if (string.IsNullOrEmpty(_csvFilePath))
-        {
-            Console.WriteLine("CSV file path is null or empty.");
-            return;
-        }
-
-        try
-        {
-            using var writer = new StreamWriter(_csvFilePath);
-            using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
-            csv.WriteRecords(list);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to write flights to CSV file.");
-        }
-    }
-
-
 
     public ICollection<FlightDomainModel> GetAll()
     {

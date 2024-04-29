@@ -9,17 +9,17 @@ using ATP.BusinessLogicLayer.Models;
 using System.Globalization;
 
 namespace ATP.DataAccessLayer.Test;
-
 public class FlightRepositoryTest
 {
     private readonly Fixture _fixture;
     private readonly string _csvFilePath;
+    private readonly FlightRepository _flightRepository;
 
     public FlightRepositoryTest()
     {
-        _fixture = new Fixture();
-        _fixture.Customize(new AutoMoqCustomization());
-        _csvFilePath = "test_flights.csv";
+        _fixture = (Fixture?)new Fixture().Customize(new AutoMoqCustomization());
+        _csvFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "test_flights.csv");
+        _flightRepository = CreateFlightRepositoryWithTestData();
     }
 
     [Fact]
@@ -101,9 +101,7 @@ public class FlightRepositoryTest
     private FlightRepository CreateFlightRepositoryWithTestData()
     {
         var flights = _fixture.CreateMany<FlightDomainModel>(5).ToList();
-        var csvFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _csvFilePath);
-
-        using (var writer = new StreamWriter(csvFilePath))
+        using (var writer = new StreamWriter(_csvFilePath))
         using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
         {
             csv.WriteRecords(flights.Select(f => new Flight { Id = f.Id }));
@@ -111,6 +109,6 @@ public class FlightRepositoryTest
 
         var mapper = new FlightMapper();
         var logger = NullLogger<FlightRepository>.Instance;
-        return new FlightRepository(csvFilePath, mapper, logger);
+        return new FlightRepository(_csvFilePath, mapper, logger);
     }
 }
